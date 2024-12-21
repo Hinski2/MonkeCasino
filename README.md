@@ -14,7 +14,7 @@ foldery:
 * sockets: logika socket.io
 * tests: wiadomo
 * utils: funkcje pomocnicze
-* szablony ejs
+* views: szablony ejs
     * layouts: layouty bazowy typu stopka, nagłówek
     * pages: strony widoków
     * partials: fragmenty wielokrotnego urzytku np menu 
