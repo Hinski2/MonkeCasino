@@ -1,0 +1,47 @@
+.mainContainer{
+	background-image: url(../assets/casinoMainPageImage.webp);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-attachment: fixed;
+	margin: 0;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	width: 100vw;
+	height: 100vh;
+}
+
+.startGamblingButton {
+	margin-top: 64vh;
+	background-color: hsla(300, 90%, 41%, 0.212);
+    backdrop-filter: blur(10px); 
+	border: 7px solid hsl(60, 100%, 90%); 
+	font-family: monospace; 
+	color: white; 
+	font-size: 30px; 
+    min-width: 200px;
+	border-radius: 10px; 
+	width: 25vw; 
+	height: auto;
+    min-height: 10vh; 
+    font-weight: bold;
+	cursor: pointer; 
+	text-transform: uppercase; 
+	letter-spacing: 2px; 
+	box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+	transition: all 0.3s ease; 
+}
+
+
+.startGamblingButton:hover {
+	background-color: yellow; 
+	color: purple; 
+	transform: scale(1.1); 
+	box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3); 
+}
+
+.startGamblingButton:active {
+	transform: scale(0.95); 
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+}
