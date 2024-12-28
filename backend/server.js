@@ -16,9 +16,8 @@ app.use(express.json()); // allow to parse json data
 app.get('/', (req, res) => {
     res.send('Hello')
 })
-
 // user routes
-app.use('/api/users', userRoutes);
+app.use('/userApi', userRoutes);
 
 // Server
 app.listen(PORT, () => {
