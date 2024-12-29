@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
     res.send('Hello')
 })
 // user routes
-app.use('/userApi', userRoutes);
+app.use('/api/users', userRoutes);
 
 // Server
 app.listen(PORT, () => {

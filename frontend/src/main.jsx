@@ -3,20 +3,10 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import './styles/index.module.css'; 
-import Greeting from './pages/Greeting'
-// import Casino from './pages/Casino/Casino'
-import Login from './pages/Login'
+import Routes from './routes/Routes'
+import { UserProvider } from "./context/useAuth";
 
-const router = createBrowserRouter([
-    {
-        path: '/',
-        element: <Greeting/>,
-    },
-    {
-        path: '/login',
-        element: <Login/>
-    }
-])
+const router = createBrowserRouter(Routes);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>

@@ -19,7 +19,7 @@ export const userLogin = async (req, res) => {
         const token = await user.generateAuthToken()
         res.send({ user, token })
     } catch (e) {
-        res.status(400).send()
+        res.status(400).send(e)
     }
 }
 
@@ -77,7 +77,6 @@ export const userDelete = async (req, res) => {
     }
 }
 
-/*
 // get all users
 export const getUsers = async (req, res) => {
     try {
@@ -89,6 +88,7 @@ export const getUsers = async (req, res) => {
     }
 }
 
+/*
 // get user by id
 export const getUser = async (req, res) => {
     const id = req.params.id;
