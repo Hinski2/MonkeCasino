@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import CustomError from "../errors/CustomError.js";
 
 const userSchema = mongoose.Schema({
 	  first_name: {
@@ -68,13 +69,13 @@ userSchema.methods.generateAuthToken = async function() {
 userSchema.statics.findByCredentials = async (email, password) => {
 	const user = await User.findOne({ email: email });
 	if (!user) {
-	  throw new Error('Unable to login!');
+		throw new CustomError('incorrect email', 400);
 	}
 
 	const isMatch = await bcrypt.compare(password, user.password);
 
 	if (!isMatch) {
-	  throw new Error('Unable to login!');
+		throw new CustomError('incorrect password', 400);
 	}
 
 	return user;

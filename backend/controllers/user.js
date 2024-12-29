@@ -1,54 +1,149 @@
 import mongoose from "mongoose";
 import User from "../models/user.js";
 
+/*
+    function for creating users, requires:
+    * "first_name"
+    * "last_name"
+    * "email"
+    * "password"
+*/
 export const createUser = async (req, res) => {
 	const user = new User(req.body);
+
+    if(!req.body.first_name || !req.body.last_name || !req.body.email || !req.body.password){
+        return res.status(400).send({
+            success: false, 
+            user_message: "Missing required fields",
+            message: "Missing required fields"
+        })
+    }
 	
 	try {
 		await user.save();
 		const token = await user.generateAuthToken();
-		res.status(201).send({ user, token });
+        res.status(201).send({  success: true, 
+            data: {user, token},
+            user_message: "your accout was created successfully",
+            message: "user was created successfully",
+        });
 	} catch (e) {
-		res.status(400).send(e);
+		res.status(500).send({
+            success: false, 
+            error: e, 
+            user_message: "An error occured while registering",
+            message:"Internal server error"
+        });
 	}
 }
 
+/*
+    function for loggin, requires:
+    * "email"
+    * "password"
+*/
 export const userLogin = async (req, res) => {
+    if(!req.body.email || !req.body.password){
+        return res.status(400).send({
+            success: false, 
+            user_message: "Email and password are required",
+            message: "Missing required fields"
+        })
+    };
+    
 	try {
         const user = await User.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken()
-        res.send({ user, token })
+        res.status(200).send({
+            success: true,
+            data: {user, token},
+            user_message: `Welcome back ${user.first_name}`, // TODO remember to upgrade user schema and add user.nick
+            message: "user logged successfully"
+        })
     } catch (e) {
-        res.status(400).send(e)
+        if (e.status === 400){
+            res.status(400).send({
+                success: false,  
+                error: e, 
+                user_message: e.message,
+                message: e.message
+            })
+
+        } else {
+            res.status(500).send({
+                success: false, 
+                error: e, 
+                user_message: "error occured while login",
+                message: "internal server error"
+            })
+        }
     }
 }
 
+/*
+    function for logout user (remove one token), requires:
+    * "token"
+*/
 export const userLogout = async (req, res) => {
 	try {
-        req.user.tokens = req.user.tokens.filter((token) => {
-            return token.token !== req.token
-        })
-        await req.user.save()
+        req.user.tokens = req.user.tokens.filter((token) => token.token !== req.token);
 
-        res.send()
+        await req.user.save()
+        res.status(200).send({
+                success: true,
+                user_message: "you have been logged out successfully",
+                message: "User logged out successfully"
+        })
     } catch (e) {
-        res.status(500).send()
+        res.status(500).send({
+            success: false, 
+            error: e, 
+            user_message: "An error occured while logging out",
+            message: "internal server error"
+        })
     }
 }
 
+/*
+    functon for logout user (remove all tokens), requires:
+    * "token"
+*/
 export const userLogoutAll = async (req, res) => {
-	    try {
+	try {
         req.user.tokens = []
         await req.user.save()
-        res.send()
+
+        res.status(200).send({
+            success: true, 
+            user_message: "you have been logged out successfully",
+            message: "user logged out successfully from all devices"
+        });
     } catch (e) {
-        res.status(500).send()
+        res.status(500).send({
+            success: false,
+            error: e,
+            user_message: "An error occured while logging out",
+            message: "internal server error"
+        })
     }
 }
-
+/*
+    function to get user (me), reqires:
+    * "token"
+*/
 export const userMe = async (req, res) => {
-	res.send(req.user);
+    res.status(200).send({
+           success: true, 
+           data: req.user,
+           message: "user profile fetched successfully",
+           user_message: `${req.user.nick}, your profile was fetched successfully`
+    });
 }
+
+/*
+    function for user update, reqiures:
+    * "token"
+*/
 
 export const userUpdate = async (req, res) => {
 	const updates = Object.keys(req.body)
@@ -56,116 +151,64 @@ export const userUpdate = async (req, res) => {
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
 
     if (!isValidOperation) {
-        return res.status(400).send({ error: 'Invalid updates!' })
+        return res.status(400).send({
+            success: false, 
+            error: new Error('invalid operation'),
+            user_message: "You can't change this",
+            message: "invalid operation"
+        })
     }
 
     try {
         updates.forEach((update) => req.user[update] = req.body[update])
         await req.user.save()
-        res.send(req.user)
+        res.status(200).send({
+            success: true, 
+            data: req.user, 
+            user_message: "your data was changed successfully",
+            message: "user data changed successfully"
+        })
     } catch (e) {
-        res.status(400).send(e)
+        res.status(400).send({
+            success: false, 
+            error: e, 
+            user_message: "error occured while changing data",
+            error: e.message
+        })
     }
 }
 
+/* 
+    function for user remove, requires:
+    * "token"
+*/
 export const userDelete = async (req, res) => {
 	try {
         await req.user.remove()
-        res.send(req.user)
+        res.status(200).send({
+            success: true, 
+            data: req.user, 
+            user_message: "your accout was deleted successfully"
+        })
     } catch (e) {
-        res.status(500).send()
+        res.status(500).send({
+            success: false, 
+            error: e, 
+            user_message: "error occured while deleting prifile",
+            message: "internal server error"
+        })
     }
 }
-
-// get all users
+/*
+    get all users, requires:
+    * void
+*/
 export const getUsers = async (req, res) => {
     try {
         const users = await User.find({});
-        res.status(200).json({success: true, data: users});
+        res.status(200).send({success: true, data: users});
     } catch (error) {
         console.log("error in fetching users: ", error);
         res.status(500).json({success: false, message: "Server error"});
     }
 }
-
-/*
-// get user by id
-export const getUser = async (req, res) => {
-    const id = req.params.id;
-
-    if(!mongoose.Types.ObjectId.isValid(id))
-        return res.status(404).json({success: false, message: "Invalid user id"});
-
-    User.findById(id, (error, user) => {
-        if(error) {
-            console.log("error in fetching user by id: ", error);
-            return res.status(500).json({success: false, message: "Server error"});
-        } else {
-            res.status(200).json({success: true, data: user});
-        }
-    })
-}
-
-// create user 
-export const postUser = async (req, res) => {
-    const user = req.body;
-
-    if(!user.first_name){
-        return res.status(400).json({success: false, message: "Please provide first name"});
-    } else if(!user.last_name){
-        return res.status(400).json({success: false, message: "Please provide last name"});
-    } else if(!user.email){
-        return res.status(400).json({success: false, message: "Please provide email"});
-    } else if(!user.password){
-        return res.status(400).json({success: false, message: "Please provide password"});
-    }
-
-    // email must be unique
-    const existingUser = await User.findOne({ email: user.email });
-    if(existingUser) {
-        return res.status(400).json({success: false, message: "User with this email already exists"});
-    }
-
-    const newUser = new User(user);
-    try {
-        await newUser.save();
-        res.status(201).json({success: true, data: newUser});
-    } catch (error) {
-        console.log("error in creating user: ", error);
-        res.status(500).json({success: false, message: "Server error"});
-    }
-}
-
-// delete user by id
-export const deleteUser = async (req, res) => {
-    const id = req.params.id;
-
-    if(!mongoose.Types.ObjectId.isValid(id))
-        return res.status(404).json({success: false, message: "Invalid user id"});
-
-    try {
-        await User.findByIdAndDelete(id);
-        res.status(200).json({success: true, message: "User deleted successfully"});
-    } catch (error) {
-        console.log("error in deleting user: ", error);
-        res.status(500).json({success: false, message: "Server error"});
-    }
-}
-
-// update user by id 
-export const updateUser = async (req, res) => {
-    const id = req.params.id;
-    const user = req.body;
-
-    if(!mongoose.Types.ObjectId.isValid(id))
-        return res.status(404).json({success: false, message: "Invalid user id"});
-
-    try {
-        const updatedUser = await User.findByIdAndUpdate(id, user, {new: true});
-        res.status(200).json({success: true, data: updatedUser});
-    } catch (error) {
-        console.log("error in updating user: ", error);
-        res.status(500).json({success: false, message: "Server error"});
-    }
-}
-*/
