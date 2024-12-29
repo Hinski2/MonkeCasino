@@ -77,6 +77,7 @@ export const userDelete = async (req, res) => {
     }
 }
 
+/*
 // get all users
 export const getUsers = async (req, res) => {
     try {
