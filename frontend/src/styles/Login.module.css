@@ -14,6 +14,7 @@
   background-repeat: no-repeat;
   background-size: cover;
   height: 100vh;
+  
 }
 
 .logo {
@@ -28,6 +29,10 @@
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   gap: 1rem; 
   margin: 0 auto;
+}
+
+.form {
+  grid-column: 2 / 5;
 }
 
 .loginPanel h2,
