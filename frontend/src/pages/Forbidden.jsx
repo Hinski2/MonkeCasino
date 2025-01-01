@@ -1,5 +1,6 @@
+import styles from '../styles/Forbidden.module.css'
 export default function Forbidden(){
     return(
-        <p> FORBIDDENNNNN!!!!!!!!!! </p>
+        <div className={styles.mainContainer}></div>
     );
 }

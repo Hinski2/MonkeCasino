@@ -61,14 +61,13 @@ export const userLogin = async (req, res) => {
             message: "user logged successfully"
         })
     } catch (e) {
-        if (e.status === 400){
-            res.status(400).send({
-                success: false,  
+        if(e?.status){
+            res.status(e.status).send({
+                success: false,
                 error: e, 
                 user_message: e.message,
                 message: e.message
             })
-
         } else {
             res.status(500).send({
                 success: false, 

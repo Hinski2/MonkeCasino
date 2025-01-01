@@ -1,7 +1,8 @@
 import React, { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { LoginApi, ReginsterApi } from "../services/AuthService";
+import { LoginApi, RegisterApi } from "../services/AuthService";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const UserContext = createContext();
 
@@ -23,10 +24,10 @@ export const UserProvider = ({children}) => {
     }, []);
 
     const registerUser = async (first_name, last_name, email, password) => {
-        await ReginsterApi(first_name, last_name, email, password)
+        await RegisterApi(first_name, last_name, email, password)
             .then((res) => {
-                if(res) {
-                    localStorage.setItem("token", res.data.token);
+                if(res?.success == true) {
+                    localStorage.setItem("token", res?.data.token);
                     const userObj = {
                         first_name: res.data.first_name,
                         last_name: res.data.last_name,
@@ -36,17 +37,19 @@ export const UserProvider = ({children}) => {
                     localStorage.setItem("user", JSON.stringify(userObj));
                     setToken(res.data.token);
                     setUser(userObj);
+                    toast.success(res.user_message);
                     navigate('casino')
-                    // do toast
+                } else {
+                    toast.error(res.user_message);
                 }
             })
-            .catch((e) => console.log(e));
+            .catch((e) => toast.warning(e));
     };
 
     const loginUser = async (email, password) => {
         await LoginApi(email, password)
             .then((res) => {
-                if(res) {
+                if(res?.success == true) {
                     localStorage.setItem("token", res.data.token);
                     const userObj = {
                         first_name: res.data.first_name,
@@ -57,11 +60,13 @@ export const UserProvider = ({children}) => {
                     localStorage.setItem("user", JSON.stringify(userObj));
                     setToken(res.data.token);
                     setUser(userObj);
+                    toast.success(res.user_message);
                     navigate('casino')
-                    // do toast
+                } else if (res) {
+                    toast.error(res.user_message);
                 }
             })
-            .catch((e) => console.log(e));
+            .catch((e) => toast.warning(e));
     };
 
     const isLoggedIn = () => {
