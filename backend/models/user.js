@@ -12,10 +12,19 @@ const userSchema = mongoose.Schema({
 	      type: String,
 	      required: true
 	  },
+	  nick: {
+			type: String, 
+			required: true
+	  },
 	  email: {
 	      type: String,
 	      required: true,
 	      unique: true
+	  },
+	  rank: {
+		type: Number,
+		required: true,
+		default: 1
 	  },
 	  password: {
 	      type: String,
