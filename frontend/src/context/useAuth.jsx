@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { LoginApi, RegisterApi } from "../services/AuthService";
+import { LoginApi, RegisterApi, LogoutApi, LogoutAllApi } from "../services/AuthService";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -21,17 +21,21 @@ export const UserProvider = ({children}) => {
             axios.defaults.headers.common["Authorization"] = "Bearer " + token;
         }
         setIsReady(true);
-    }, []);
+    }, [token]);
 
-    const registerUser = async (first_name, last_name, email, password) => {
-        await RegisterApi(first_name, last_name, email, password)
+
+    const registerUser = async (first_name, last_name, email, nick, password, profile_picture) => {
+        await RegisterApi(first_name, last_name, email, nick, password, profile_picture)
             .then((res) => {
                 if(res?.success == true) {
                     localStorage.setItem("token", res?.data.token);
                     const userObj = {
                         first_name: res.data.first_name,
                         last_name: res.data.last_name,
-                        email: res.data.email
+                        email: res.data.email,
+                        nick: res.data.nick,
+                        password: res.data.password,
+                        profile_picture: res.data.profile_picture
                     }
 
                     localStorage.setItem("user", JSON.stringify(userObj));
@@ -73,16 +77,36 @@ export const UserProvider = ({children}) => {
         return !!user;
     }
 
-    const logout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        setUser(null);
-        setToken("");
-        navigate('/');
+    const logout = async () => {
+        await LogoutApi()
+            .then((res) => {
+                toast.success(res.user_message);
+
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+                setUser(null);
+                setToken("");
+                navigate('/');
+            })
+            .catch((e) => toast.warning(e));
+    }
+
+    const logoutAll = async () => {
+        await LogoutAllApi()
+            .then((res) => {
+                toast.success(res.user_message);
+
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+                setUser(null);
+                setToken("");
+                navigate('/');
+            })
+            .catch((e) => toast.warning(e));
     }
 
     return (
-        <UserContext.Provider value={{ loginUser, user, token, logout, isLoggedIn, registerUser }}>
+        <UserContext.Provider value={{ loginUser, user, token, logout, isLoggedIn, registerUser, logoutAll }}>
             {isReady ? children : null }
         </UserContext.Provider>
     )

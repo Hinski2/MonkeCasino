@@ -1,0 +1,180 @@
+.mainContainer{
+    display: flex;
+    flex-direction: row;
+}
+
+.leftContainer {
+    flex: 1;
+    background-image: url('../assets/signUpImage.webp');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+}
+
+.rightContainer {
+    flex: 2;
+    background-color: hsl(0, 0%, 10%);
+}
+
+.logo {
+    display: flex;
+    color: white;
+    justify-content: space-around;
+}
+
+.logo h1 {
+    font-size: 45px;
+}
+
+.RegisterPanel {
+    color: white;
+    display: grid;
+    grid-template-columns: 1fr 4fr 1fr 4fr 1fr;
+    gap: 1rem;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.row1,
+.row2,
+.row3 { 
+    margin-top: 20px;
+    grid-column: 2 / 5;
+    display: flex;
+    justify-content: space-between;
+}
+
+.firstName,
+.nick,
+.password1 {
+    flex: 1;
+    margin-right: 40px;
+}
+
+.lastName,
+.email,
+.password2 {
+    flex: 1;
+}
+
+.firstNameInput,
+.lastNameInput,
+.nickInput,
+.emailInput,
+.password1Input,
+.password2Input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #555; 
+    border-radius: 4px;
+    background-color: #222; 
+    color: #fff; 
+    margin-bottom: 1.5rem;
+}
+
+.firstNameInput:focus, 
+.lastNameInput:focus,
+.nickInput:focus,
+.emailInput:focus,
+.password1Input:focus,
+.password2Input:focus { 
+    outline: none; 
+    border-color: #06ecd5;
+    box-shadow: 0 0 5px rgba(255, 251, 0, 0.5);
+}
+
+.profilePicturePanel {
+    color: white;
+    display: grid;
+    grid-template-columns: 1fr 4fr 1fr 4fr 1fr;
+    gap: 1rem;
+    width: 100%;
+    margin: 0 auto;
+
+    color: white;
+    text-align: center;
+}
+
+.profilePicturePanel h2 {
+    margin-top: 50px;
+    text-align: center;
+    grid-column: 2 / 5;
+}
+
+.imageGrid {
+    grid-column: 2 / 5;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.imageContainer {
+    border: 2px solid transparent;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border 0.2s ease-in-out;
+}
+
+.imageContainer img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.imageContainer.selected {
+    outline: none; 
+    border-color: #06ecd5;
+    box-shadow: 0 0 5px rgba(255, 251, 0, 0.5);
+}
+
+.submitSection {
+    display: grid;
+    grid-template-columns: 1fr 4fr 1fr 4fr 1fr;
+    gap: 1rem;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.submitButton {
+  margin-top: 30px;
+  grid-column: 2 / 5;
+  width: 100%; 
+  background-color: purple;
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submitButton:hover {
+  background-color: #8a2be2; 
+}
+
+.loginPrompt {
+    color: #ffffff;
+    font-size: 0.9rem;
+    grid-column: 2 / 5; 
+    justify-self: center; 
+    align-self: center;
+}
+
+.loginLink {
+  color: #fffa65; 
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.loginLink:hover {
+  text-decoration: underline;
+}

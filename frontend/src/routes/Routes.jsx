@@ -23,6 +23,10 @@ const Casino = lazy(
     () => import('../pages/Casino')
 );
 
+const Profile = lazy(
+    () => import('../pages/Profile')
+);
+
 const Forbidden = lazy(
     () => import('../pages/Forbidden')
 );
@@ -63,6 +67,10 @@ const Routes = [
                     {
                         index: true,
                         element: <Casino />
+                    },
+                    {
+                        path: 'profile',
+                        element: <Profile />
                     }
                 ]
             },

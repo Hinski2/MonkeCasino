@@ -3,4 +3,10 @@ body{
     margin: 0;
     font-family: roboto, monospace;
     box-sizing: border-box;
+    overflow: auto;
+}
+
+/* hide scrollbar */
+body::-webkit-scrollbar {
+    display: none; 
 }

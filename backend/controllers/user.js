@@ -3,15 +3,17 @@ import User from "../models/user.js";
 
 /*
     function for creating users, requires:
+    * "nick"
     * "first_name"
     * "last_name"
     * "email"
     * "password"
+    * "profilePicture" - string with image name in frontend/public/profile_pictures
 */
 export const createUser = async (req, res) => {
 	const user = new User(req.body);
 
-    if(!req.body.first_name || !req.body.last_name || !req.body.email || !req.body.password){
+    if(!req.body.nick || !req.body.profile_picture || !req.body.first_name || !req.body.last_name || !req.body.email || !req.body.password){
         return res.status(400).send({
             success: false, 
             user_message: "Missing required fields",
@@ -57,7 +59,7 @@ export const userLogin = async (req, res) => {
         res.status(200).send({
             success: true,
             data: {user, token},
-            user_message: `Welcome back ${user.first_name}`, // TODO remember to upgrade user schema and add user.nick
+            user_message: `Welcome back ${user.nick}`,
             message: "user logged successfully"
         })
     } catch (e) {

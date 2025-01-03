@@ -17,16 +17,36 @@ export const LoginApi = async (email, password) => {
     }
 }
 
-export const RegisterApi = async (first_name, last_name, email, password) => {
+export const RegisterApi = async (first_name, last_name, email, nick, password, profile_picture) => {
     try{
-        const res = await axios.post(api + '/users/register', {
+        const { data } = await axios.post(api + 'users/register', {
             "first_name": first_name, 
             "last_name": last_name,
             "email": email,
-            "password": password
+            "nick": nick,
+            "password": password,
+            "profile_picture": profile_picture
         })
-        return res; 
+        return data; 
     } catch(error){
         handleError(error);
     }
 }
+
+export const LogoutApi = async () => {
+    try{
+        const { data } = await axios.post(api + 'users/logout');
+        return data;
+    } catch (error){
+        handleError(error);
+    }
+};
+
+export const LogoutAllApi = async () => {
+    try{
+        const { data } = await axios.post(api + 'users/logoutAll');
+        return data;
+    } catch (error){
+        handleError(error);
+    }
+};
