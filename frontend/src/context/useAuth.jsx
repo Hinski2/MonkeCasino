@@ -1,8 +1,9 @@
 import React, { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { LoginApi, RegisterApi, LogoutApi, LogoutAllApi } from "../services/AuthService";
+import { LoginApi, RegisterApi, LogoutApi, LogoutAllApi, ChangeDataApi} from "../services/AuthService";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { handleError } from "../utils/ErrorHandler";
 
 const UserContext = createContext();
 
@@ -30,35 +31,13 @@ export const UserProvider = ({children}) => {
                 if(res?.success == true) {
                     localStorage.setItem("token", res?.data.token);
                     const userObj = {
-                        first_name: res.data.first_name,
-                        last_name: res.data.last_name,
-                        email: res.data.email,
-                        nick: res.data.nick,
-                        password: res.data.password,
-                        profile_picture: res.data.profile_picture
-                    }
-
-                    localStorage.setItem("user", JSON.stringify(userObj));
-                    setToken(res.data.token);
-                    setUser(userObj);
-                    toast.success(res.user_message);
-                    navigate('casino')
-                } else {
-                    toast.error(res.user_message);
-                }
-            })
-            .catch((e) => toast.warning(e));
-    };
-
-    const loginUser = async (email, password) => {
-        await LoginApi(email, password)
-            .then((res) => {
-                if(res?.success == true) {
-                    localStorage.setItem("token", res.data.token);
-                    const userObj = {
-                        first_name: res.data.first_name,
-                        last_name: res.data.last_name,
-                        email: res.data.email
+                        first_name: res.data.user.first_name,
+                        nick: res.data.user.nick,
+                        last_name: res.data.user.last_name,
+                        email: res.data.user.email,
+                        lvl: res.data.user.lvl, 
+                        experiencePoints: res.data.user.experiencePoints,
+                        profilePicture: res.data.user.profilePicture
                     }
 
                     localStorage.setItem("user", JSON.stringify(userObj));
@@ -70,7 +49,34 @@ export const UserProvider = ({children}) => {
                     toast.error(res.user_message);
                 }
             })
-            .catch((e) => toast.warning(e));
+            .catch((e) => handleError(e));
+    };
+
+    const loginUser = async (email, password) => {
+        await LoginApi(email, password)
+            .then((res) => {
+                if(res?.success == true) {
+                    localStorage.setItem("token", res.data.token);
+                    const userObj = {
+                        first_name: res.data.user.first_name,
+                        nick: res.data.user.nick,
+                        last_name: res.data.user.last_name,
+                        email: res.data.user.email,
+                        lvl: res.data.user.lvl, 
+                        experiencePoints: res.data.user.experiencePoints,
+                        profilePicture: res.data.user.profilePicture
+                    }
+
+                    localStorage.setItem("user", JSON.stringify(userObj));
+                    setToken(res.data.token);
+                    setUser(userObj);
+                    toast.success(res.user_message);
+                    navigate('casino')
+                } else if (res) {
+                    toast.error(res.user_message);
+                }
+            })
+            .catch((e) => handleError(e));
     };
 
     const isLoggedIn = () => {
@@ -88,7 +94,7 @@ export const UserProvider = ({children}) => {
                 setToken("");
                 navigate('/');
             })
-            .catch((e) => toast.warning(e));
+            .catch((e) => handleError(e));
     }
 
     const logoutAll = async () => {
@@ -102,11 +108,31 @@ export const UserProvider = ({children}) => {
                 setToken("");
                 navigate('/');
             })
-            .catch((e) => toast.warning(e));
+            .catch((e) => handleError(e));
+    }
+
+    const dataChange = async (first_name, last_name, nick, password) => {
+        await ChangeDataApi(first_name, last_name, nick, password)
+            .then((res) => {
+                const userObj = {
+                        first_name: res.data.first_name,
+                        nick: res.data.nick,
+                        last_name: res.data.last_name,
+                        email: res.data.email,
+                        lvl: res.data.lvl, 
+                        experiencePoints: res.data.experiencePoints,
+                        profilePicture: res.data.profilePicture
+                    }
+
+                localStorage.setItem("user", JSON.stringify(userObj));
+                setUser(userObj);
+                toast.success(res.user_message);
+            })
+            .catch((e) => handleError(e));
     }
 
     return (
-        <UserContext.Provider value={{ loginUser, user, token, logout, isLoggedIn, registerUser, logoutAll }}>
+        <UserContext.Provider value={{ loginUser, user, token, logout, isLoggedIn, registerUser, logoutAll, dataChange }}>
             {isReady ? children : null }
         </UserContext.Provider>
     )

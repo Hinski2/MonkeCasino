@@ -25,7 +25,7 @@ export const RegisterApi = async (first_name, last_name, email, nick, password, 
             "email": email,
             "nick": nick,
             "password": password,
-            "profile_picture": profile_picture
+            "profilePicture": profile_picture
         })
         return data; 
     } catch(error){
@@ -50,3 +50,17 @@ export const LogoutAllApi = async () => {
         handleError(error);
     }
 };
+
+export const ChangeDataApi = async (first_name, last_name, nick, password) => {
+    try{
+        const { data } = await axios.patch(api + 'users/me', {
+            "first_name": first_name, 
+            "last_name": last_name,
+            "nick": nick,
+            "password": password,
+        });
+        return data;
+    } catch (error){
+        handleError(error);
+    }
+}

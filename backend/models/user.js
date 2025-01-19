@@ -34,7 +34,6 @@ const userSchema = mongoose.Schema({
 	profilePicture: {
 		type: String,
 		require: true,
-		default: "pp0_0"
 	},
 	password: {
 		type: String,

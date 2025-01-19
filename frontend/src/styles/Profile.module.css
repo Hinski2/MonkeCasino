@@ -1,0 +1,147 @@
+.mainContainer {
+    display: flex;
+    height: 100vh;
+    background-color: hsl(0, 0%, 10%);
+    color: white;
+    overflow: hidden;
+}
+
+.leftContainer {
+    flex: 1;
+    background: linear-gradient(to bottom, #333, #111);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    border-right: 2px solid hsl(0, 0%, 20%);
+    height: 100vh; 
+    position: sticky; 
+    top: 0; 
+}
+
+.rightContainer {
+    flex: 2;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow: auto; 
+}
+
+.rightContainer h1 {
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #06ecd5;
+}
+
+.data {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    font-size: 1.2rem;
+}
+
+.data h2 {
+    margin: 0;
+    padding: 0.5rem;
+    /* border: 1px solid #555;  */
+    background-color: #222;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.dataChange{
+    display: grid;
+    grid-template-columns: 1fr 4fr 1fr;
+}
+
+.dataChange h2{
+    grid-column: 2/3;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.firstName, 
+.lastName,
+.nick,
+.password1,
+.password2 {
+    grid-column: 2/3;
+}
+
+.firstNameInput,
+.lastNameInput,
+.nickInput,
+.password1Input,
+.password2Input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #555; 
+    border-radius: 4px;
+    background-color: #222; 
+    color: #fff; 
+    margin-bottom: 1.5rem;
+}
+
+.firstNameInput:focus, 
+.lastNameInput:focus,
+.nickInput:focus,
+.password1Iinput:focus,
+.password2Input:focus {
+    outline: none; 
+    border-color: #06ecd5;
+    box-shadow: 0 0 5px rgba(255, 251, 0, 0.5);
+}
+
+.submitSection{
+    grid-column: 2/3;
+    text-align: center;
+    display: flex;
+}
+
+.leftButtonDiv{
+    flex: 1;
+}
+.rightButtonDiv{
+    margin-left: 10px;
+    flex: 1;
+}
+
+.submitButton {
+  margin-top: 30px;
+  grid-column: 2 / 5;
+  width: 100%; 
+  background-color: purple;
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.discardButton {
+  margin-top: 30px;
+  grid-column: 2 / 5;
+  width: 100%; 
+  background-color: rgb(222, 2, 50);
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submitButton:hover {
+  background-color: #8a2be2; 
+}
+
+.discardButton:hover {
+    background-color: rgb(254, 34, 82);
+}

@@ -13,15 +13,24 @@ import User from "../models/user.js";
 export const createUser = async (req, res) => {
 	const user = new User(req.body);
 
-    if(!req.body.nick || !req.body.profile_picture || !req.body.first_name || !req.body.last_name || !req.body.email || !req.body.password){
+    if(!req.body.nick || !req.body.profilePicture || !req.body.first_name || !req.body.last_name || !req.body.email || !req.body.password){
         return res.status(400).send({
             success: false, 
             user_message: "Missing required fields",
             message: "Missing required fields"
         })
     }
-	
+
 	try {
+        const existingUser = await User.findOne({ email: req.body.email });
+        if (existingUser) {
+            return res.status(400).send({
+                success: false,
+                user_message: "Email already in use",
+                message: "Duplicate email detected"
+            });
+        }
+
 		await user.save();
 		const token = await user.generateAuthToken();
         res.status(201).send({  success: true, 
@@ -148,7 +157,7 @@ export const userMe = async (req, res) => {
 
 export const userUpdate = async (req, res) => {
 	const updates = Object.keys(req.body)
-    const allowedUpdates = ['first_name', 'last_name', 'email', 'password']
+    const allowedUpdates = ['first_name', 'last_name', 'nick', 'password']
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
 
     if (!isValidOperation) {
