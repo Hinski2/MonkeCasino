@@ -111,8 +111,8 @@ export const UserProvider = ({children}) => {
             .catch((e) => handleError(e));
     }
 
-    const dataChange = async (first_name, last_name, nick, password) => {
-        await ChangeDataApi(first_name, last_name, nick, password)
+    const dataChange = async (data) => {
+        await ChangeDataApi(data)
             .then((res) => {
                 const userObj = {
                         first_name: res.data.first_name,

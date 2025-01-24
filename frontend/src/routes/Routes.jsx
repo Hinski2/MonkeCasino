@@ -35,6 +35,9 @@ const NotFound = lazy(
     () => import('../pages/NotFound')
 );
 
+const ProfilePicturePicker = lazy(
+    () => import('../pages/ProfilePicturePicker')
+)
 
 const Routes = [
     {
@@ -71,6 +74,10 @@ const Routes = [
                     {
                         path: 'profile',
                         element: <Profile />
+                    },
+                    {
+                        path: 'profilePicturePicker',
+                        element: <ProfilePicturePicker />
                     }
                 ]
             },

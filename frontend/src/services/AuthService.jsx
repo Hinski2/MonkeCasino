@@ -51,14 +51,9 @@ export const LogoutAllApi = async () => {
     }
 };
 
-export const ChangeDataApi = async (first_name, last_name, nick, password) => {
+export const ChangeDataApi = async (form) => {
     try{
-        const { data } = await axios.patch(api + 'users/me', {
-            "first_name": first_name, 
-            "last_name": last_name,
-            "nick": nick,
-            "password": password,
-        });
+        const { data } = await axios.patch(api + 'users/me', form);
         return data;
     } catch (error){
         handleError(error);

@@ -1,4 +1,5 @@
 import styles from '../styles/Profile.module.css';
+import { useNavigate } from 'react-router-dom';
 import UserCard from '../components/userCard/userCard';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -8,20 +9,43 @@ import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 
 const validation = Yup.object().shape({
-     nick: Yup.string().required('Nick is required'),
-    first_name: Yup.string().required('Name is required'),
-    last_name: Yup.string().required('Surname is required'),
-    password: Yup.string().required('Password is required').min(7, 'Password min length is 7'),
-    password_confirmation: Yup.string().required('Password confirmation is required').oneOf([Yup.ref('password'), null], 'Passwords must match'),
+    nick: Yup.string(),
+    first_name: Yup.string(),
+    last_name: Yup.string(),
+    password: Yup.string(),
+    password_confirmation: Yup.string()
+        .oneOf([Yup.ref('password'), null], 'Passwords must match')
+        .when('password', {
+            is: (password) => password && password.trim() !== '',
+            then: (schema) => schema.min(7, 'min length is 7'), 
+        }),
 })
 
 const Profile = () => {
+    const navigate = useNavigate();
+    const { dataChange } = useAuth();
+    const { register, handleSubmit, formState: { errors }, watch, reset } = useForm({resolver: yupResolver(validation)})
+
+    const handleProfilePictureChange = () => {
+        const formData = watch();
+        const isFormFilled = Object.values(formData).some((value) => value && value.trim() !== '');
+
+        if(isFormFilled){
+            const confirmDiscard = window.confirm('You have unsaved changes. Do you want to discard them?');
+            if(!confirmDiscard) return;
+        }
+
+        // Nawiguj na inną stronę
+        navigate('/casino/profilePicturePicker');
+    };
+
     let { first_name, last_name, nick, lvl } = JSON.parse(localStorage.getItem('user'));
 
-    const { dataChange } = useAuth();
-    const { register, handleSubmit, formState: {errors}} = useForm({resolver: yupResolver(validation)})
     const handleDataChange = (form) => {
-        dataChange(form.first_name, form.last_name, form.nick, form.password);
+        const filteredData = Object.fromEntries(
+        Object.entries(form).filter(([key, value]) => value && value.trim() !== '' && key != 'password_confirmation'));
+        dataChange(filteredData);
+        reset()
     }
 
     const handleValidationErrors = (errors) => {
@@ -107,7 +131,17 @@ const Profile = () => {
                             </div>
                         </div>
                     </div>
+
+
                 </form>
+
+                <div className={styles.profilePictureChangeDiv}>
+                    <h2> you can also change your profile picture </h2>
+                    <button className={styles.profilePictureChangeButton} onClick={handleProfilePictureChange}>
+                        Change your profile picture
+                    </button>
+                </div>
+
             </div>
         </div>
     );

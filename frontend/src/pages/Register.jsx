@@ -21,12 +21,12 @@ const validation = Yup.object().shape({
 export default function Register(){
     const [selectedImage, setSelectedImage] = useState(null);
     const images = [
-        '/profile_pictures/pp0_0.webp',
-        '/profile_pictures/pp1_0.webp',
-        '/profile_pictures/pp2_0.webp',
-        '/profile_pictures/pp3_0.webp',
-        '/profile_pictures/pp4_0.webp',
-        '/profile_pictures/pp5_0.webp',
+        '/profile_pictures/pp0.webp',
+        '/profile_pictures/pp1.webp',
+        '/profile_pictures/pp2.webp',
+        '/profile_pictures/pp3.webp',
+        '/profile_pictures/pp4.webp',
+        '/profile_pictures/pp5.webp',
     ];
 
     const { registerUser } = useAuth();
