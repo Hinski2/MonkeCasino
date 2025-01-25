@@ -41,7 +41,7 @@ const userSchema = mongoose.Schema({
 		minlength: 7,
 		trim: true
 	},
-	accoutBallance: {
+	accoutBalance: {
 		type: Number,
 		required: true,
 		default: 0

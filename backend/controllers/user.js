@@ -33,7 +33,8 @@ export const createUser = async (req, res) => {
 
 		await user.save();
 		const token = await user.generateAuthToken();
-        res.status(201).send({  success: true, 
+        res.status(201).send({  
+            success: true, 
             data: {user, token},
             user_message: "your accout was created successfully",
             message: "user was created successfully",
@@ -188,6 +189,50 @@ export const userUpdate = async (req, res) => {
     }
 }
 
+export const sudoUserUpdate = async (req, res) => {
+    const updates = Object.keys(req.body);
+    const allowedUpdates = ['first_name', 'last_name', 'nick', 'password', 'profilePicture', 'lvl', 'experiencePoints', 'accoutBalance']
+    const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
+
+    if (!isValidOperation) {
+        return res.status(400).send({
+            success: false, 
+            error: new Error('invalid operation'),
+            user_message: "You can't change this",
+            message: "invalid operation"
+        })
+    }
+
+    const id = req.params.id;
+        const user = await User.findOne({ _id: id });
+        if(user == null) {
+            return res.status(400).send({
+                success: false, 
+                user_message: "there is no user with this id",
+                message: "there is no user with this id"
+            })
+        }
+
+    try {
+        updates.forEach((update) => user[update] = req.body[update])
+        await user.save();
+
+        res.status(200).send({
+            success: true, 
+            data: user, 
+            user_message: "your data was changed successfully",
+            message: "user data changed successfully"
+        })
+    } catch (e) {
+        res.status(400).send({
+            success: false, 
+            error: e, 
+            user_message: "error occured while changing data",
+            error: e.message
+        })
+    }
+}
+
 /* 
     function for user remove, requires:
     * "token"
@@ -220,5 +265,43 @@ export const getUsers = async (req, res) => {
     } catch (error) {
         console.log("error in fetching users: ", error);
         res.status(500).json({success: false, message: "Server error"});
+    }
+}
+
+/*
+    function for getting some bassic infor about user with id, requires:
+    * void
+*/
+export const getUser = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const user = await User.findOne({ _id: id });
+        if(user == null) {
+            return res.status(400).send({
+                success: false, 
+                user_message: "there is no user with this id",
+                message: "there is no user with this id"
+            })
+        }
+
+        res.status(200).send({
+            success: true, 
+            data: {
+                nick: user.nick,
+                lvl: user.lvl,
+                accoutBalance: user.accoutBalance,
+                experiencePoints: user.experiencePoints,
+                profilePicture: user.profilePicture
+            },
+            user_message: "data was fethed correctly",
+            message: "data was fetched correctly"
+        });
+    } catch (e) {
+        res.status(500).send({
+            success: false, 
+            error: e, 
+            user_message: "An error occured while data fetching",
+            message: "Internal server error"
+        })
     }
 }

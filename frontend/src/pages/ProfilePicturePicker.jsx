@@ -4,12 +4,14 @@ import { getAllProfilePictures, getProfilePicturesLEQLvl } from '../utils/getPro
 import { useAuth } from '../context/useAuth';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const ProfilePicturePicker = () => {
     const [pictures, setPictures] = useState([]); 
     const [selectedImage, setSelectedImage] = useState(null); 
     const { dataChange } = useAuth();
     const { lvl } = JSON.parse(localStorage.getItem('user'));
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchPictures = async () => {
@@ -31,8 +33,8 @@ const ProfilePicturePicker = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
         if(selectedImage){
-            console.log({'profilePicture': selectedImage});
             dataChange({'profilePicture': selectedImage});
+            navigate('/casino')
         } else {
             toast.warn('first you have to pick image');
         }

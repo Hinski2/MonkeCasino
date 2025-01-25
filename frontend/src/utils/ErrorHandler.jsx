@@ -18,7 +18,8 @@ export const handleError = (error) => {
             toast.warning(error.message)
         } else {
             toast.error(error);
-            console.log(error)
         }
     }
+
+    console.log(error);
 }

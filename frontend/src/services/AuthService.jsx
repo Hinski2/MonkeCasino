@@ -11,9 +11,17 @@ export const LoginApi = async (email, password) => {
         });
 
         return data;
-    } catch(error){
-        console.log(error.response.data);
+    } catch (error) {
         handleError(error.response?.data ? error.response.data : error);
+    }
+}
+
+export const GetUserByIdApi = async (id) => {
+    try {
+        const { data } = await axios.get(api + 'users/' + id);
+        return data
+    } catch (error) {
+        handleError(error);
     }
 }
 

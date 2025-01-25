@@ -31,3 +31,26 @@ export const auth = async (req, res, next) => {
 		})
 	}
 };
+
+
+export const serverAuth = (req, res, next) => {
+    try {
+        const authHeader = req.headers['server-auth'];
+        if(!authHeader){
+            throw new Error("Missing server authentication token")
+        }
+
+        if(authHeader !== process.env.SERVER_AUTH_SECRET){
+            throw new Error("Invalid server authentication token")
+        }
+        
+        next()
+    } catch (e) {
+        res.status(403).send({
+            success: false, 
+            message: e.message,
+            user_message: "Access denied",
+            message: e.message
+        });
+    }
+};

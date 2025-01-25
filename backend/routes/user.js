@@ -1,7 +1,7 @@
 import express from 'express';
-import { createUser, userLogin, userLogout, userLogoutAll, userMe, userUpdate, userDelete, getUsers } from '../controllers/user.js';
+import { createUser, userLogin, userLogout, userLogoutAll, userMe, userUpdate, userDelete, getUsers, getUser, sudoUserUpdate } from '../controllers/user.js';
 
-import { auth } from '../middlewares/auth.js';
+import { auth, serverAuth } from '../middlewares/auth.js';
 
 const router = express.Router();
 
@@ -9,6 +9,8 @@ const router = express.Router();
 router.get('/', getUsers)
 
 router.get('/me', auth, userMe);
+
+router.get('/:id', getUser)
 
 // post methods
 router.post('/register', createUser);
@@ -21,6 +23,8 @@ router.post('/logoutAll', auth, userLogoutAll);
 
 // patch methods
 router.patch('/me', auth, userUpdate);
+
+router.patch('/:id', serverAuth, sudoUserUpdate)
 
 // delete methods 
 router.delete('/me', auth, userDelete);

@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { LoginApi, RegisterApi, LogoutApi, LogoutAllApi, ChangeDataApi} from "../services/AuthService";
+import { LoginApi, RegisterApi, LogoutApi, LogoutAllApi, ChangeDataApi, GetUserByIdApi} from "../services/AuthService";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { handleError } from "../utils/ErrorHandler";
@@ -131,8 +131,24 @@ export const UserProvider = ({children}) => {
             .catch((e) => handleError(e));
     }
 
+    const getUserById = async (id) => {
+        await GetUserByIdApi(id)
+            .then((res) => {
+                const userObj = {
+                    nick: res.data.nick, 
+                    lvl: res.data.lvl, 
+                    accoutBalance: res.data.accoutBalance,
+                    experiencePoints: res.data.experiencePoints,
+                    profilePicture: res.data.profilePicture
+                } 
+                
+                return userObj;
+            })
+            .catch((e) => handleError(e));
+    }
+
     return (
-        <UserContext.Provider value={{ loginUser, user, token, logout, isLoggedIn, registerUser, logoutAll, dataChange }}>
+        <UserContext.Provider value={{ loginUser, user, token, logout, isLoggedIn, registerUser, logoutAll, dataChange, getUserById }}>
             {isReady ? children : null }
         </UserContext.Provider>
     )

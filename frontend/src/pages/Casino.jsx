@@ -33,21 +33,19 @@ export default function Casino(){
                 </div>
             </div>
             
-            <div className={styles.inside}>
-                <div className={styles.centerButtons}>
-                    <Link to="games/slots">
-                        <button className={styles.gameButton}>Slots</button>
-                    </Link>
-                    <Link to="games/rulette">
-                        <button className={styles.gameButton}>Rulette</button>
-                    </Link>
-                    <Link to="games/black_jack">
-                        <button className={styles.gameButton}>Black Jack</button>
-                    </Link>
-                    <Link to="games/poker">
-                        <button className={styles.gameButton}>Poker</button>
-                    </Link>
-                </div>
+            <div className={styles.centerButtons}>
+                <Link to="games/slots">
+                    <button className={styles.gameButton}>Slots</button>
+                </Link>
+                <Link to="games/rulette">
+                    <button className={styles.gameButton}>Rulette</button>
+                </Link>
+                <Link to="games/black_jack">
+                    <button className={styles.gameButton}>Black Jack</button>
+                </Link>
+                <Link to="games/poker">
+                    <button className={styles.gameButton}>Poker</button>
+                </Link>
             </div>
         </div>
     );
