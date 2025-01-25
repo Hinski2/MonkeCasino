@@ -3,4 +3,16 @@ body{
     margin: 0;
     font-family: roboto, monospace;
     box-sizing: border-box;
+    overflow: auto;
+    background-color: hsl(0, 0%, 10%);
+    color: white;
+}
+
+/* hide scrollbar */
+body::-webkit-scrollbar {
+    display: none; 
+}
+
+.example::-webkit-scrollbar {
+  display: none;
 }

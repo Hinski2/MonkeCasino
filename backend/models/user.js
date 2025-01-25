@@ -4,30 +4,48 @@ import jwt from 'jsonwebtoken';
 import CustomError from "../errors/CustomError.js";
 
 const userSchema = mongoose.Schema({
-	  first_name: {
-	      type: String,
-	      required: true
-	  },
-	  last_name: {
-	      type: String,
-	      required: true
-	  },
-	  email: {
-	      type: String,
-	      required: true,
-	      unique: true
-	  },
-	  password: {
-	      type: String,
-	      required: true,
+	first_name: {
+	    type: String,
+	    required: true
+	},
+	last_name: {
+		type: String,
+		required: true
+	},
+	nick: {
+		type: String, 
+		required: true
+	},
+	email: {
+		type: String,
+		required: true,
+		unique: true
+	},
+	lvl: {
+		type: Number,
+		required: true,
+		default: 1
+	},
+	experiencePoints: {
+		type: Number, 
+		required: true, 
+		default: 0
+	},
+	profilePicture: {
+		type: String,
+		require: true,
+	},
+	password: {
+		type: String,
+		required: true,
 		minlength: 7,
 		trim: true
-	  },
-	  accoutBallance: {
-	      type: Number,
-	      required: true,
-	      default: 0
-	  },
+	},
+	accoutBalance: {
+		type: Number,
+		required: true,
+		default: 0
+	},
 	tokens: [
 		{
 			token: {
@@ -46,7 +64,6 @@ userSchema.pre('save', async function(next) {
 	if(user.isModified('password')) {
 		user.password = await bcrypt.hash(user.password, 7);
 	}
-	 
 });
 
 userSchema.methods.toJSON = function() {

@@ -23,6 +23,12 @@
   color: white;
 }
 
+.parentContainer {
+  display: grid;
+  place-items: center; 
+  height: 80vh; 
+}
+
 .loginPanel {
   color: white;
   display: grid;
@@ -53,7 +59,7 @@
   margin-bottom: 0.5rem;
 }
 
-.EmailInput,
+.EmailInput, 
 .PasswordInput {
   box-sizing: border-box;
   width: 100%;

@@ -31,48 +31,50 @@ export default function Login() {
           <h1>MONKE CASINO</h1>
         </div>
 
-        <div className={styles.loginPanel}>
-          <h2>Welcome Back</h2>
-          <p className={styles.subTitle}>Please enter your details</p>
+        <div className={styles.parentContainer}>
+          <div className={styles.loginPanel}>
+            <h2>Welcome Back</h2>
+            <p className={styles.subTitle}>Please enter your details</p>
 
-          <form onSubmit={handleSubmit(handleLogin, handleValidationErrors)} className={styles.form}>
-            <div className={styles.emailSection}>
-              <h3>Email address</h3>
-              <input
-                type="text"
-                className={styles.EmailInput}
-                placeholder="yourEmail@domain.com"
-                {...register('email')}
-              />
+            <form onSubmit={handleSubmit(handleLogin, handleValidationErrors)} className={styles.form}>
+              <div className={styles.emailSection}>
+                <h3>Email address</h3>
+                <input
+                  type="text"
+                  className={styles.EmailInput}
+                  placeholder="yourEmail@domain.com"
+                  {...register('email')}
+                />
+              </div>
+
+              <div className={styles.passwordSection}>
+                <h3>Password</h3>
+                <input
+                  type="password"
+                  className={styles.PasswordInput}
+                  placeholder="••••••••"
+                  {...register('password')}
+                />
+              </div>
+
+              <button type="submit" className={styles.submitButton}>
+                Log In
+              </button>
+            </form>
+            <div className={styles.actions}>
+              <p className={styles.signUpPrompt}>
+                <Link to="/forgotPassword" className={styles.forgotLink}>
+                  Forgot Password?
+                </Link>
+              </p>
+
+              <p className={styles.signUpPrompt}>
+                Don’t have an account?{' '}
+                <Link to="/register" className={styles.signUpLink}>
+                  Sign Up
+                </Link>
+              </p>
             </div>
-
-            <div className={styles.passwordSection}>
-              <h3>Password</h3>
-              <input
-                type="password"
-                className={styles.PasswordInput}
-                placeholder="••••••••"
-                {...register('password')}
-              />
-            </div>
-
-            <button type="submit" className={styles.submitButton}>
-              Log In
-            </button>
-          </form>
-          <div className={styles.actions}>
-						<p className={styles.signUpPrompt}>
-            	<Link to="/forgotPassword" className={styles.forgotLink}>
-              	Forgot Password?
-            	</Link>
-						</p>
-
-            <p className={styles.signUpPrompt}>
-              Don’t have an account?{' '}
-              <Link to="/register" className={styles.signUpLink}>
-                Sign Up
-              </Link>
-            </p>
           </div>
         </div>
       </div>

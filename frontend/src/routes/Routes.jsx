@@ -23,6 +23,10 @@ const Casino = lazy(
     () => import('../pages/Casino')
 );
 
+const Profile = lazy(
+    () => import('../pages/Profile')
+);
+
 const Forbidden = lazy(
     () => import('../pages/Forbidden')
 );
@@ -31,6 +35,9 @@ const NotFound = lazy(
     () => import('../pages/NotFound')
 );
 
+const ProfilePicturePicker = lazy(
+    () => import('../pages/ProfilePicturePicker')
+)
 
 const Routes = [
     {
@@ -63,6 +70,14 @@ const Routes = [
                     {
                         index: true,
                         element: <Casino />
+                    },
+                    {
+                        path: 'profile',
+                        element: <Profile />
+                    },
+                    {
+                        path: 'profilePicturePicker',
+                        element: <ProfilePicturePicker />
                     }
                 ]
             },
