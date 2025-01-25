@@ -35,7 +35,6 @@ const Profile = () => {
             if(!confirmDiscard) return;
         }
 
-        // Nawiguj na inną stronę
         navigate('/casino/profilePicturePicker');
     };
 

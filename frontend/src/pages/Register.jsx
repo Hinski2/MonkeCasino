@@ -34,6 +34,7 @@ export default function Register(){
     const handleRegister = (form) => {
         registerUser(form.first_name, form.last_name, form.email, form.nick, form.password, form.profile_picture);
     };
+    
     const handleImageClick = (index) => {
         const imageName = images[index].split('/').pop();
         setSelectedImage(imageName);

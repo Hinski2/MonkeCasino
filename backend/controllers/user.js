@@ -157,7 +157,7 @@ export const userMe = async (req, res) => {
 
 export const userUpdate = async (req, res) => {
 	const updates = Object.keys(req.body)
-    const allowedUpdates = ['first_name', 'last_name', 'nick', 'password']
+    const allowedUpdates = ['first_name', 'last_name', 'nick', 'password', 'profilePicture']
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
 
     if (!isValidOperation) {
