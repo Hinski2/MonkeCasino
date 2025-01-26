@@ -23,10 +23,10 @@ async fn main() -> std::io::Result<()> {
                     .allow_any_header(),
             )
             .app_data(app_data.clone())
-            .route("/new_game", web::get().to(handlers::new_game))
-            .route("/hit/{token}", web::get().to(handlers::hit))
-            .route("/stand/{token}", web::get().to(handlers::stand))
-            .route("/double/{token}", web::get().to(handlers::double))
+            .route("/new_game", web::post().to(handlers::new_game))
+            .route("/hit", web::post().to(handlers::hit))
+            .route("/stand", web::post().to(handlers::stand))
+            .route("/double", web::post().to(handlers::double))
     })
     .bind("127.0.0.1:8080")?
     .run()

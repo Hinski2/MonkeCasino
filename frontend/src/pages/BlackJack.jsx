@@ -7,57 +7,103 @@ import { useForm } from "react-hook-form";
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import React, { useState } from "react";
+import { useEffect } from "react";
+import { handleError } from '../utils/ErrorHandler.jsx';
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 const Blackjack = () => {
   const baseUrl = "http://127.0.0.1:8080";
-  const [token, setToken] = useState(null);
-  const [balance, setBalance] = useState(1000);
+  const  { getUserMe } = useAuth();
+  const [token, setToken] = useState(null)
+  const [balance, setBalance] = useState(null);
   const [bet, setBet] = useState(0);
   const [result, setResult] = useState(null);
   const [playerHand, setPlayerHand] = useState([]);
   const [dealerHand, setDealerHand] = useState([]);
   const [gameStarted, setGameStarted] = useState(false);
-  const startNewGame = async () => {
-    const response = await fetch(`${baseUrl}/new_game?balance=1000`);
-    const data = await response.json();
-    setToken(data.token);
-    setBalance(data.player_balance);
-    setBet(bet);
-    setResult(null);
-    setPlayerHand(data.player_hand);
-    setDealerHand(data.dealer_hand);
-    setGameStarted(true);
+
+  useEffect(() => {
+    const fetchUserBalance = async () => {
+      try {
+        const userData = await getUserMe();
+        setBalance(userData.accoutBalance);
+      } catch (e) {
+        handleError(e);
+      }
+    }
+
+    fetchUserBalance();
+    
+  },  [balance]);
+
+	const getToken = async () => {
+		const token2 = localStorage.getItem('token');
+		const decodedToken = jwtDecode(token2);
+		return decodedToken._id;
+	}
+
+const startNewGame = async () => {
+    try {
+		const user_id = await getToken();
+		const response = await axios.post(`${baseUrl}/new_game`, {	
+			balance: balance,
+			bet: bet,
+			user_id: user_id,
+		});
+      if(response.status !== 200) throw new Error("failed to start a new game")
+      const data = response.data;
+      setToken(data.token);
+      setBalance(data.player_balance);
+      setBet(bet);
+      setResult(null);
+      setPlayerHand(data.player_hand);
+      setDealerHand(data.dealer_hand);
+      setGameStarted(true);
+    } catch (e) {
+      handleError(e);
+    }
   };
 
   const hit = async () => {
     if (!token) return;
-    const response = await fetch(`${baseUrl}/hit/${token}`);
-    const data = await response.json();
+    const response = await axios.post(`${baseUrl}/hit`, {
+		token: token,
+	});
+	  const data = response.data;
     setPlayerHand(data.player_hand);
     if (data.game_over) {
       setResult(data.result);
       setGameStarted(false);
+	  setBalance(0);
     }
   };
 
   const stand = async () => {
     if (!token) return;
-    const response = await fetch(`${baseUrl}/stand/${token}`);
-    const data = await response.json();
+    const response = await axios.post(`${baseUrl}/stand`, {
+		token: token,
+	});
+	const data = response.data;
+	
     setDealerHand(data.dealer_hand);
     setResult(data.result);
     setGameStarted(false);
+	setBalance(0);
   };
 
   const doubleBet = async () => {
     if (!token) return;
-    const response = await fetch(`${baseUrl}/double/${token}`);
-    const data = await response.json();
+    const response = await axios.post(`${baseUrl}/stand`, {
+		token: token,
+	});
+    const data = response.data;
     setPlayerHand(data.player_hand);
     setDealerHand(data.dealer_hand);
     setBet(data.bet);
     setResult(data.result);
     setGameStarted(false);
+	setBalance(0);
   };
 
   const renderCards = (cards) => {

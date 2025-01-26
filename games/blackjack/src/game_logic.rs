@@ -18,6 +18,7 @@ pub struct GameState {
     pub result: Option<String>,
     pub player_balance: i32,
     pub bet: i32,
+    pub user_id: String,
 }
 
 pub struct AppState {
@@ -72,6 +73,7 @@ impl GameState {
             result: None,
             player_balance: starting_balance,
             bet: 0,
+            user_id: "0".to_string(),
         }
     }
 }
