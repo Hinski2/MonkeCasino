@@ -40,7 +40,7 @@ export default function Casino(){
                 <Link to="games/rulette">
                     <button className={styles.gameButton}>Rulette</button>
                 </Link>
-                <Link to="games/black_jack">
+                <Link to="blackjack">
                     <button className={styles.gameButton}>Black Jack</button>
                 </Link>
                 <Link to="games/poker">

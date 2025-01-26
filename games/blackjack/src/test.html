@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blackjack Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 600px;
+            background-color: #34495e;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #1abc9c;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #16a085;
+        }
+        .cards {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .card {
+            padding: 10px;
+            border: 1px solid #ecf0f1;
+            border-radius: 4px;
+            background-color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Blackjack</h1>
+        <div id="game-info">
+            <p><strong>Balance:</strong> <span id="balance">0</span></p>
+            <p><strong>Bet:</strong> <span id="bet">0</span></p>
+            <p id="result"></p>
+        </div>
+
+        <div id="player-hand" class="cards"></div>
+        <div id="dealer-hand" class="cards"></div>
+
+        <div>
+            <button id="new-game">New Game</button>
+            <button id="hit" disabled>Hit</button>
+            <button id="stand" disabled>Stand</button>
+            <button id="double" disabled>Double</button>
+        </div>
+    </div>
+
+    <script>
+        const baseUrl = 'http://127.0.0.1:8080';
+        let token = null;
+
+        const balanceEl = document.getElementById('balance');
+        const betEl = document.getElementById('bet');
+        const resultEl = document.getElementById('result');
+        const playerHandEl = document.getElementById('player-hand');
+        const dealerHandEl = document.getElementById('dealer-hand');
+
+        const newGameBtn = document.getElementById('new-game');
+        const hitBtn = document.getElementById('hit');
+        const standBtn = document.getElementById('stand');
+        const doubleBtn = document.getElementById('double');
+
+        async function startNewGame() {
+            const response = await fetch(`${baseUrl}/new_game?balance=1000`);
+            const data = await response.json();
+            token = data.token;
+
+            balanceEl.textContent = data.player_balance;
+            betEl.textContent = 0;
+            resultEl.textContent = '';
+
+            displayCards(playerHandEl, data.player_hand);
+            displayCards(dealerHandEl, data.dealer_hand);
+
+            hitBtn.disabled = false;
+            standBtn.disabled = false;
+            doubleBtn.disabled = false;
+        }
+
+        async function hit() {
+            const response = await fetch(`${baseUrl}/hit/${token}`);
+            const data = await response.json();
+
+            displayCards(playerHandEl, data.player_hand);
+
+            if (data.game_over) {
+                resultEl.textContent = data.result;
+                hitBtn.disabled = true;
+                standBtn.disabled = true;
+                doubleBtn.disabled = true;
+            }
+        }
+
+        async function stand() {
+            const response = await fetch(`${baseUrl}/stand/${token}`);
+            const data = await response.json();
+
+            displayCards(dealerHandEl, data.dealer_hand);
+            resultEl.textContent = data.result;
+            hitBtn.disabled = true;
+            standBtn.disabled = true;
+            doubleBtn.disabled = true;
+        }
+
+        async function doubleBet() {
+            const response = await fetch(`${baseUrl}/double/${token}`);
+            const data = await response.json();
+
+            displayCards(playerHandEl, data.player_hand);
+            displayCards(dealerHandEl, data.dealer_hand);
+
+            betEl.textContent = data.bet;
+            resultEl.textContent = data.result;
+            hitBtn.disabled = true;
+            standBtn.disabled = true;
+            doubleBtn.disabled = true;
+        }
+
+        function displayCards(container, cards) {
+            container.innerHTML = '';
+            cards.forEach(card => {
+                const cardEl = document.createElement('div');
+                cardEl.classList.add('card');
+                cardEl.textContent = `${card.rank}`;
+                container.appendChild(cardEl);
+            });
+        }
+
+        newGameBtn.addEventListener('click', startNewGame);
+        hitBtn.addEventListener('click', hit);
+        standBtn.addEventListener('click', stand);
+        doubleBtn.addEventListener('click', doubleBet);
+    </script>
+</body>
+</html>
+
