@@ -73,10 +73,13 @@ const Blackjack = () => {
 	return (
 
 		<div className={styles.blackjackWrapper}>
+
+
+  <div className={styles.blackjackContainer}>
   {result && (
     <div
       className={`${styles.resultMessage} ${
-        result === "Player wins!" ? styles.win :
+        result === ("Player wins!" || "BlackJack!") ? styles.win :
         result === "Dealer wins!" ? styles.lose :
 		result === "Player busts. Dealer wins!" ? styles.lose :
         styles.tie
@@ -85,17 +88,16 @@ const Blackjack = () => {
       {result}
     </div>
   )}
-
-  <div className={styles.blackjackContainer}>
     <div className={styles.hands}>
-      <div className={styles.playerHand}>
-        <h3 className={styles.handLabel}>Player Hand:</h3>
+		<div className={styles.playerHand}>
+		<div>
+        <h3 className={styles.handLabel}>Player Hand:</h3></div>
         {renderCards(playerHand)}
-      </div>
-      <div className={styles.dealerHand}>
-        <h3 className={styles.handLabel}>Dealer Hand:</h3>
+		</div>
+		<div className={styles.dealerHand}>
+		<div><h3 className={styles.handLabel}>Dealer Hand:</h3></div>
         {renderCards(dealerHand)}
-      </div>
+		</div>
     </div>
   </div>
 
