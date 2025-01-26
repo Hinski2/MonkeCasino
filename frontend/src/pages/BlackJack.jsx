@@ -7,26 +7,51 @@ import { useForm } from "react-hook-form";
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import React, { useState } from "react";
+import { useEffect } from "react";
+import { handleError } from '../utils/ErrorHandler.jsx';
 
 const Blackjack = () => {
   const baseUrl = "http://127.0.0.1:8080";
+  const  { getUserMe } = useAuth();
+
   const [token, setToken] = useState(null);
-  const [balance, setBalance] = useState(1000);
+  const [balance, setBalance] = useState(null);
   const [bet, setBet] = useState(0);
   const [result, setResult] = useState(null);
   const [playerHand, setPlayerHand] = useState([]);
   const [dealerHand, setDealerHand] = useState([]);
   const [gameStarted, setGameStarted] = useState(false);
+
+  useEffect(() => {
+    const fetchUserBalance = async () => {
+      try {
+        const userData = await getUserMe();
+        setBalance(userData.accoutBalance);
+      } catch (e) {
+        handleError(e);
+      }
+    }
+
+    fetchUserBalance();
+    
+  },  []);
+
   const startNewGame = async () => {
-    const response = await fetch(`${baseUrl}/new_game?balance=1000`);
-    const data = await response.json();
-    setToken(data.token);
-    setBalance(data.player_balance);
-    setBet(bet);
-    setResult(null);
-    setPlayerHand(data.player_hand);
-    setDealerHand(data.dealer_hand);
-    setGameStarted(true);
+    try {
+      const response = await fetch(`${baseUrl}/new_game?balance=${balance}`);
+      if(!response.ok) throw new Error("failed to start a new game")
+
+      const data = await response.json();
+      setToken(data.token);
+      setBalance(data.player_balance);
+      setBet(bet);
+      setResult(null);
+      setPlayerHand(data.player_hand);
+      setDealerHand(data.dealer_hand);
+      setGameStarted(true);
+    } catch (e) {
+      handleError(e);
+    }
   };
 
   const hit = async () => {

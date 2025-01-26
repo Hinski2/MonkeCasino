@@ -4,6 +4,7 @@ import { LoginApi, RegisterApi, LogoutApi, LogoutAllApi, ChangeDataApi, GetUserB
 import axios from "axios";
 import { toast } from "react-toastify";
 import { handleError } from "../utils/ErrorHandler";
+import { jwtDecode } from "jwt-decode";
 
 const UserContext = createContext();
 
@@ -147,8 +148,35 @@ export const UserProvider = ({children}) => {
             .catch((e) => handleError(e));
     }
 
+    const getUserMe = async () => {
+        try{
+            if(!token){
+                throw new Error("token is missing. plase log in")
+            }
+
+            const decodedToken = jwtDecode(token);
+            const id = decodedToken._id;
+
+            const res = await GetUserByIdApi(id);
+            const userObj = {
+                nick: res.data.nick, 
+                lvl: res.data.lvl, 
+                accoutBalance: res.data.accoutBalance,
+                experiencePoints: res.data.experiencePoints,
+                profilePicture: res.data.profilePicture
+            } 
+            
+            return userObj;
+        } catch (e) {
+            handleError(e);
+            return null;
+        }
+
+
+    }
+
     return (
-        <UserContext.Provider value={{ loginUser, user, token, logout, isLoggedIn, registerUser, logoutAll, dataChange, getUserById }}>
+        <UserContext.Provider value={{ loginUser, user, token, logout, isLoggedIn, registerUser, logoutAll, dataChange, getUserById, getUserMe }}>
             {isReady ? children : null }
         </UserContext.Provider>
     )
