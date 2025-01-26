@@ -9,12 +9,13 @@ import { Link } from 'react-router-dom';
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { handleError } from '../utils/ErrorHandler.jsx';
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 const Blackjack = () => {
   const baseUrl = "http://127.0.0.1:8080";
   const  { getUserMe } = useAuth();
-
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState(null)
   const [balance, setBalance] = useState(null);
   const [bet, setBet] = useState(0);
   const [result, setResult] = useState(null);
@@ -34,14 +35,24 @@ const Blackjack = () => {
 
     fetchUserBalance();
     
-  },  []);
+  },  [balance]);
 
-  const startNewGame = async () => {
+	const getToken = async () => {
+		const token2 = localStorage.getItem('token');
+		const decodedToken = jwtDecode(token2);
+		return decodedToken._id;
+	}
+
+const startNewGame = async () => {
     try {
-      const response = await fetch(`${baseUrl}/new_game?balance=${balance}`);
-      if(!response.ok) throw new Error("failed to start a new game")
-
-      const data = await response.json();
+		const user_id = await getToken();
+		const response = await axios.post(`${baseUrl}/new_game`, {	
+			balance: balance,
+			bet: bet,
+			user_id: user_id,
+		});
+      if(response.status !== 200) throw new Error("failed to start a new game")
+      const data = response.data;
       setToken(data.token);
       setBalance(data.player_balance);
       setBet(bet);
@@ -56,33 +67,43 @@ const Blackjack = () => {
 
   const hit = async () => {
     if (!token) return;
-    const response = await fetch(`${baseUrl}/hit/${token}`);
-    const data = await response.json();
+    const response = await axios.post(`${baseUrl}/hit`, {
+		token: token,
+	});
+	  const data = response.data;
     setPlayerHand(data.player_hand);
     if (data.game_over) {
       setResult(data.result);
       setGameStarted(false);
+	  setBalance(0);
     }
   };
 
   const stand = async () => {
     if (!token) return;
-    const response = await fetch(`${baseUrl}/stand/${token}`);
-    const data = await response.json();
+    const response = await axios.post(`${baseUrl}/stand`, {
+		token: token,
+	});
+	const data = response.data;
+	
     setDealerHand(data.dealer_hand);
     setResult(data.result);
     setGameStarted(false);
+	setBalance(0);
   };
 
   const doubleBet = async () => {
     if (!token) return;
-    const response = await fetch(`${baseUrl}/double/${token}`);
-    const data = await response.json();
+    const response = await axios.post(`${baseUrl}/stand`, {
+		token: token,
+	});
+    const data = response.data;
     setPlayerHand(data.player_hand);
     setDealerHand(data.dealer_hand);
     setBet(data.bet);
     setResult(data.result);
     setGameStarted(false);
+	setBalance(0);
   };
 
   const renderCards = (cards) => {

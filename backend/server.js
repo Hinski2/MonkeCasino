@@ -14,14 +14,31 @@ const __dirname = path.resolve();
 // allow to parse json data
 app.use(express.json()); 
 
-// CORS configuration
-const corsOptions = {
-	origin: 'http://localhost:5173', 
+const corsOptions1 = {
+  origin: 'http://localhost:5173',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true, 
-  optionsSuccessStatus: 204
+  credentials: true,
+  optionsSuccessStatus: 204,
 };
-app.use(cors(corsOptions));
+
+const corsOptions2 = {
+  origin: 'http://127.0.0.1:8080',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  optionsSuccessStatus: 204,
+};
+
+app.use((req, res, next) => {
+  const origin = req.header('Origin');
+
+  if (origin === 'http://localhost:5173') {
+    cors(corsOptions1)(req, res, next);
+  } else if (origin === 'http://127.0.0.1:8080') {
+	  cors(corsOptions2)(req, res, next);
+  } else {
+    res.status(403).send('Unoathorised!');
+  }
+});
 
 // Routes
 app.get('/', (req, res) => {
