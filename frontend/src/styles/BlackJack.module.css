@@ -1,0 +1,249 @@
+/* Main wrapper */
+.blackjackWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    max-width: 1800px;
+    margin: 0 auto;
+}
+
+/* Header with title and info */
+.header {
+	margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 75%;
+	margin-left: 10%;
+    margin-bottom: 5px;
+}
+.navigation {
+	display: flex;
+}
+.title {
+    color: #ff00ff;
+    font-size: 3rem;
+    text-shadow: 0 0 15px #ff00ff, 0 0 25px #ff0080;
+    margin: 0;
+    text-align: center;
+}
+
+.infoContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-right: 20px;
+}
+
+.balance,
+.bet {
+    font-size: 1.5rem;
+    color: #fff;
+    text-shadow: 0 0 5px #00f5ff;
+    margin: 5px 0;
+    text-align: right;
+}
+
+/* Result message */
+.resultMessage {
+    font-size: 1.5rem;
+    font-family: "Orbitron", sans-serif;
+    text-align: center;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+    text-shadow: 0 0 10px, 0 0 20px;
+    animation: pulse 1.5s infinite;
+	background-color: black;
+	max-width: 300px;
+	height: 50px;
+	padding: 10px;
+	justify-content: center;
+}
+
+.resultMessage.win {
+	background-color: black;
+	color: #00ff00; /* Neon green for win */
+    text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff80;
+}
+
+.resultMessage.lose {
+	background-color: black;
+	color: #ff0000; /* Neon red for loss */
+    text-shadow: 0 0 10px #ff0000, 0 0 20px #ff4000;
+}
+
+.resultMessage.tie {
+   	background-color: black;
+	color: #ffff00; /* Neon yellow for tie */
+    text-shadow: 0 0 10px #ffff00, 0 0 20px #ffff80;
+}
+
+/* Glow animation */
+@keyframes pulse {
+    0%, 100% {
+        text-shadow: 0 0 10px, 0 0 20px;
+    }
+    50% {
+        text-shadow: 0 0 20px, 0 0 40px;
+    }
+}
+
+/* Main container */
+.blackjackContainer {
+	font-family: "Orbitron", sans-serif;
+    color: #fff;
+    background-image: url('../assets/animeBlackjack.webp');
+    background-size: cover;
+    background-position: center;
+    text-align: center;
+    padding: 40px;
+    border-radius: 10px;
+    min-width: 60%;
+	max-width: 60%;
+    min-height: 550px;
+    margin: 20px auto;
+    box-shadow: 0 0 30px #00f5ff;
+}
+
+/* Hands section */
+.hands {
+    display: flex;
+    justify-content: space-around;
+    margin: 40px 0;
+}
+
+.playerHand,
+.dealerHand {
+	margin-top: 180px;
+    width: 45%;
+    text-align: center;
+}
+
+.handLabel {
+	padding: 10px;
+    font-size: 1.8rem;
+    font-family: "Orbitron", sans-serif;
+    color: #00f5ff; /* Neon blue */
+    text-shadow: 0 0 10px #00f5ff, 0 0 20px #00d9ff, 0 0 30px #00bfff;
+    text-align: center;
+    margin-bottom: 20px;
+    animation: glow 1.5s infinite;
+	display: inline-block;
+	background-color: black;
+	width: 65%;
+}
+
+/* Glow animation for hand labels */
+@keyframes glow {
+    0%, 100% {
+        text-shadow: 0 0 10px #00f5ff, 0 0 20px #00d9ff, 0 0 30px #00bfff;
+    }
+    50% {
+        text-shadow: 0 0 20px #00f5ff, 0 0 30px #00d9ff, 0 0 40px #00bfff;
+    }
+}
+
+/* Card styling */
+.card {
+    display: inline-block;
+    width: 100px;
+    height: 140px;
+    background-size: cover;
+    background-position: center;
+    margin: 5px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #ff007f;
+}
+
+/* Buttons styling */
+.buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+	height: 90px;
+    gap: 15px;
+}
+
+.buttons button {
+    background-color: #00f5ff;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 5px;
+	width: 155px;
+    color: #000;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.buttons button:hover {
+    background-color: #ff00ff;
+    color: #fff;
+    box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff0080;
+}
+
+.buttons button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+}
+
+/* Slider styling */
+.sliderContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 45%;
+}
+
+.sliderLabel {
+    font-size: 1.5rem;
+    color: #ff00ff;
+    text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff0080;
+    margin-bottom: 10px;
+}
+
+.slider {
+    -webkit-appearance: none;
+    width: 80%;
+    height: 10px;
+    background: linear-gradient(90deg, #ff00ff, #00f5ff);
+    border-radius: 5px;
+    outline: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 0 10px #ff00ff, 0 0 15px #00f5ff;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #00f5ff;
+    border-radius: 50%;
+    box-shadow: 0 0 5px #ff00ff, 0 0 10px #ff0080;
+    transition: all 0.3s ease;
+}
+
+.slider::-webkit-slider-thumb:hover {
+    background: #ff00ff;
+    box-shadow: 0 0 10px #ff00ff, 0 0 20px #00f5ff;
+}
+
+.slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #00f5ff;
+    border-radius: 50%;
+    box-shadow: 0 0 5px #ff00ff, 0 0 10px #ff0080;
+    transition: all 0.3s ease;
+}
+
+.slider::-moz-range-thumb:hover {
+    background: #ff00ff;
+    box-shadow: 0 0 10px #ff00ff, 0 0 20px #00f5ff;
+}
+

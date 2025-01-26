@@ -6,11 +6,11 @@ import { auth, serverAuth } from '../middlewares/auth.js';
 const router = express.Router();
 
 // get methods
-router.get('/', getUsers)
+router.get('/', getUsers);
 
 router.get('/me', auth, userMe);
 
-router.get('/:id', getUser)
+router.get('/:id', getUser);
 
 // post methods
 router.post('/register', createUser);
@@ -24,7 +24,7 @@ router.post('/logoutAll', auth, userLogoutAll);
 // patch methods
 router.patch('/me', auth, userUpdate);
 
-router.patch('/:id', serverAuth, sudoUserUpdate)
+router.patch('/:id', serverAuth, sudoUserUpdate);
 
 // delete methods 
 router.delete('/me', auth, userDelete);

@@ -39,6 +39,10 @@ const ProfilePicturePicker = lazy(
     () => import('../pages/ProfilePicturePicker')
 )
 
+const BlackJack = lazy(
+	() => import('../pages/BlackJack')
+)
+
 const Routes = [
     {
         path: '/',
@@ -78,7 +82,11 @@ const Routes = [
                     {
                         path: 'profilePicturePicker',
                         element: <ProfilePicturePicker />
-                    }
+                    },
+					{
+						path: 'blackjack',
+						element: <BlackJack />
+					},
                 ]
             },
             {
