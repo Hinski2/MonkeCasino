@@ -8,7 +8,7 @@ import axios from "axios";
 import { toast } from 'react-toastify';
 
 export default function Slots(){
-    const baseUrl = "http://127.0.0.1:3030";
+    const baseUrl = "77.255.162.181:3030";
     const { getUserMe } = useAuth();
     const [balance, setBalance] = useState(null);
     const [win, setWin] = useState(10);

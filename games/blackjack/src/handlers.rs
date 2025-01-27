@@ -48,9 +48,9 @@ pub async fn new_game(
         Some(user) => user,
         _ => return HttpResponse::BadRequest().body("Missing 'user_id'!"),
     };
-    let url = format!("http://localhost:3000/api/users/{}", user_id);
+    let url = format!("http://77.255.162.181:3000/api/users/{}", user_id);
     let client = reqwest::Client::new();
-    let origin_header = "http://127.0.0.1:8080";
+    let origin_header = "http://77.255.162.181";
     let starting_balance_2 = match client
     .get(&url)
     .header("Origin", origin_header)
@@ -110,9 +110,9 @@ pub async fn new_game(
 }
 
 pub async fn money(x: i32, id: String) {
-    let url = format!("http://localhost:3000/api/users/{}", id);
+    let url = format!("http://77.255.162.181:3000/api/users/{}", id);
     let client = reqwest::Client::new();
-    let origin_header = "http://127.0.0.1:8080";
+    let origin_header = "http://77.255.162.181";
     println!("{x} {id}");
     let body = serde_json::json!({
         "accoutBalance": x

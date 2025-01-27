@@ -155,7 +155,7 @@ fn singleRound(t: *Table) !WinInfo {
 // -----------------------------------------------------------------------------
 const Client = std.http.Client;
 
-pub const BASE_URL = "http://localhost:3000";
+pub const BASE_URL = "http://77.255.162.181:3000";
 pub const USERS_ENDPOINT = "/api/users";
 var gpa = std.heap.GeneralPurposeAllocator(.{}){};
 const gpa_allocator = gpa.allocator();
@@ -707,7 +707,7 @@ pub fn main() !void {
     });
     try listener.listen();
 
-    std.debug.print("Server listening on http://localhost:3030\n", .{});
+    std.debug.print("Server listening on http://77.255.162.181:3030\n", .{});
     zap.start(.{
         .threads = 2,
         .workers = 2,

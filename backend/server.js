@@ -15,21 +15,21 @@ const __dirname = path.resolve();
 app.use(express.json()); 
 
 const corsOptions1 = {
-  origin: 'http://localhost:5173',
+  origin: '77.255.162.181:5173',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   optionsSuccessStatus: 204,
 };
 
 const corsOptions2 = {
-  origin: 'http://127.0.0.1:8080',
+  origin: '77.255.162.181:8080',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   optionsSuccessStatus: 204,
 };
 
 const corsOptions3 = {
-  origin: 'http://localhost:3030',
+  origin: '77.255.162.181:3030',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   optionsSuccessStatus: 204,
@@ -38,21 +38,21 @@ const corsOptions3 = {
 app.use((req, res, next) => {
   const origin = req.header('Origin');
 
-  if (origin === 'http://localhost:5173') {
+  if (origin === '77.255.162.181:5173') {
     cors(corsOptions1)(req, res, next);
-  } else if (origin === 'http://127.0.0.1:8080') {
+  } else if (origin === '77.255.162.181:8080') {
 	  cors(corsOptions2)(req, res, next);
-  } else if (origin === 'http://localhost:3030') {
+  } else if (origin === '77.255.162.181:3030') {
       cors(corsOptions3)(req, res, next);  
   } else {
-    res.status(403).send('Unoathorised!');
+    res.status(403).send({
+      success: false, 
+      user_message: "permission denied, you don't have authorization to use users api",
+      message: "permission denied, you don't have authorization to use users api",
+    });
   }
 });
 
-// Routes
-app.get('/', (req, res) => {
-    res.send('Hello')
-})
 // user routes
 app.use('/api/users', userRoutes);
 

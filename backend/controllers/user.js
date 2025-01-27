@@ -184,7 +184,7 @@ export const userUpdate = async (req, res) => {
             success: false, 
             error: e, 
             user_message: "error occured while changing data",
-            error: e.message
+            message: e.message
         })
     }
 }
