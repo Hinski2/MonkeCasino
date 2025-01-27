@@ -28,6 +28,13 @@ const corsOptions2 = {
   optionsSuccessStatus: 204,
 };
 
+const corsOptions3 = {
+  origin: 'http://localhost:3030',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  optionsSuccessStatus: 204,
+}
+
 app.use((req, res, next) => {
   const origin = req.header('Origin');
 
@@ -35,6 +42,8 @@ app.use((req, res, next) => {
     cors(corsOptions1)(req, res, next);
   } else if (origin === 'http://127.0.0.1:8080') {
 	  cors(corsOptions2)(req, res, next);
+  } else if (origin === 'http://localhost:3030') {
+      cors(corsOptions3)(req, res, next);  
   } else {
     res.status(403).send('Unoathorised!');
   }

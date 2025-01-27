@@ -57,6 +57,7 @@ pub const TableManager = struct {
                 std.debug.print("Error in singleRound for table {d}: {any}\n", .{ table_id, err });
             }
 
+            // TODO additional logic to add balances to kicked players' cashes;
             table_ptr.kick_left();
             table_ptr.refill_bots();
 
@@ -84,6 +85,7 @@ fn broadcastToAllPlayers(info: GameInfo) void {
 }
 
 fn awaitUserMove(t: *Table, in_board_id: usize, timeout_ns: u64) bool {
+    // TODO wait for call withing timeout_ns time;
     _ = t;
     _ = in_board_id;
     _ = timeout_ns;
