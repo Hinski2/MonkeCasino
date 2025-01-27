@@ -50,7 +50,7 @@ pub async fn new_game(
     };
     let url = format!("http://77.255.162.181:3000/api/users/{}", user_id);
     let client = reqwest::Client::new();
-    let origin_header = "http://77.255.162.181";
+    let origin_header = "http://77.255.162.181:8080";
     let starting_balance_2 = match client
     .get(&url)
     .header("Origin", origin_header)

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { handleError } from "../utils/ErrorHandler";
 
-const api = "http://77.255.162.181/api/";
+const api = "http://77.255.162.181:3000/api/";
 
 export const LoginApi = async (email, password) => {
     try {
