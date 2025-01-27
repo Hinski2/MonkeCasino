@@ -15,6 +15,24 @@ const CmpRes = rules_module.CompareResult;
 const Choice = player_module.Choice;
 const ChoiceStruct = player_module.ChoiceStruct;
 
+pub const WinInfo = struct {
+    winners_ids: [8]usize,
+    winners_count: usize,
+
+    pub fn print(self: *WinInfo, players: [8]Player) !void {
+        const stdout = std.io.getStdOut().writer();
+        var id: usize = 0;
+
+        try stdout.writeAll("Winners: ");
+
+        while (id < self.winners_count) : (id += 1) {
+            try stdout.print("{s}, ", .{players[self.winners_ids[id]].name});
+        }
+
+        try stdout.writeAll("\n");
+    }
+};
+
 pub const GameInfo = struct {
     pot: u64,
     current_player_id: usize,
@@ -226,7 +244,7 @@ pub const Table = struct {
         return ChoiceStruct{ .can_check = true, .can_raise = true };
     }
 
-    pub fn end_round(self: *Table) void {
+    pub fn end_round(self: *Table) WinInfo {
         var winner_ids: [8]usize = undefined;
         var winner_count: u64 = 1;
         var win_per_person: u64 = undefined;
@@ -291,6 +309,8 @@ pub const Table = struct {
                 player.status = PSEnum.Left;
             }
         }
+
+        return WinInfo{ .winners_ids = winner_ids, .winners_count = winner_count };
     }
 
     pub fn kick_left(self: *Table) void {
@@ -302,8 +322,10 @@ pub const Table = struct {
     }
 
     pub fn timeout_current(self: *Table) void {
-        play(Choice.Fold);
-        self.players[self.curr_active].status = PSEnum.Left;
+        const curr = self.curr_player;
+
+        self.play(Choice.Fold);
+        self.players[curr].status = PSEnum.Left;
     }
 
     pub fn get_info(self: *Table) GameInfo {
