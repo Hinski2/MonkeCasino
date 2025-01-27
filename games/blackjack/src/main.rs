@@ -28,7 +28,7 @@ async fn main() -> std::io::Result<()> {
             .route("/stand", web::post().to(handlers::stand))
             .route("/double", web::post().to(handlers::double))
     })
-    .bind("77.255.162.181:8080")?
+    .bind("0.0.0.0:8080")?
     .run()
     .await
 }
