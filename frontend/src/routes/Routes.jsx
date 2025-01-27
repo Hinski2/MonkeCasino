@@ -43,6 +43,14 @@ const BlackJack = lazy(
 	() => import('../pages/BlackJack')
 )
 
+const Slots = lazy(
+    () => import('../pages/Slots')
+)
+
+const Roulette = lazy(
+    () => import('../pages/Roulette')
+)
+
 const Routes = [
     {
         path: '/',
@@ -87,6 +95,14 @@ const Routes = [
 						path: 'blackjack',
 						element: <BlackJack />
 					},
+                    {
+                        path: 'slots',
+                        element: <Slots />
+                    },
+                    {
+                        path: 'roulette',
+                        element: <Roulette />
+                    }
                 ]
             },
             {

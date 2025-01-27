@@ -1,0 +1,97 @@
+.mainContainer {
+  display: flex;
+  flex-direction: row;
+  width: 100vw;
+  height: 100vh;
+  background-color: #1b1b1b; 
+  color: white;
+}
+
+.leftDiv {
+  flex: 0 0 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.roulette_container {
+  width: 35vw;
+  aspect-ratio: 1 / 1;
+
+  > div {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+  }
+}
+
+.rightDiv {
+  flex: 0 0 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px; 
+  padding: 20px;
+}
+
+.sliderContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.sliderLabel {
+  margin-bottom: 5px;
+  font-size: 20px;
+}
+
+.slider {
+  width: 400px;
+}
+
+.spinButton {
+  background-color: #ff5f5f;
+  color: #fff;
+  padding: 20px 40px;
+  font-size: 36px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.spinButton:hover {
+  background-color: #ff7a7a;
+}
+
+.betButtonsContainer {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 10px;       
+  justify-content: center;
+  padding: 50px;
+}
+
+.betButton {
+  background-color: #444;
+  color: #fff;
+  border: 1px solid #666;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 25px;
+  transition: background-color 0.3s;
+}
+
+.betButton:hover {
+  background-color: #555;
+}
+
+.active {
+  background-color: #ffae00 !important;
+  color: #fff !important;
+}

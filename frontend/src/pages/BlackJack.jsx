@@ -1,11 +1,5 @@
 import styles from '../styles/BlackJack.module.css';
-import { useNavigate } from 'react-router-dom';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { useAuth } from '../context/useAuth'
-import { GetUserByIdApi } from '../services/AuthService.jsx';
-import { useForm } from "react-hook-form";
-import { toast } from 'react-toastify';
-import { Link } from 'react-router-dom';
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { handleError } from '../utils/ErrorHandler.jsx';
@@ -75,7 +69,7 @@ const startNewGame = async () => {
     if (data.game_over) {
       setResult(data.result);
       setGameStarted(false);
-	  setBalance(0);
+	    setBalance(0);
     }
   };
 
@@ -103,7 +97,7 @@ const startNewGame = async () => {
     setBet(data.bet);
     setResult(data.result);
     setGameStarted(false);
-	setBalance(0);
+	  setBalance(0);
   };
 
   const renderCards = (cards) => {
