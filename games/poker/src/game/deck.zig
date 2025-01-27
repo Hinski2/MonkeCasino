@@ -8,7 +8,7 @@ var gpa = std.heap.GeneralPurposeAllocator(.{}){};
 const gpa_allocator = gpa.allocator();
 const rand = std.crypto.random;
 
-const DeckError = error{
+pub const DeckError = error{
     DeckReinitialization,
     DeckEmpty,
 };
