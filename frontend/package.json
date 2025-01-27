@@ -14,6 +14,7 @@
     "@hookform/resolvers": "^3.9.1",
     "jwt-decode": "^4.0.0",
     "react": "^18.3.1",
+    "react-custom-roulette": "^1.4.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.54.2",
     "react-icons": "^5.4.0",

@@ -34,16 +34,16 @@ export default function Casino(){
             </div>
             
             <div className={styles.centerButtons}>
-                <Link to="games/slots">
+                <Link to="slots">
                     <button className={styles.gameButton}>Slots</button>
                 </Link>
-                <Link to="games/rulette">
+                <Link to="roulette">
                     <button className={styles.gameButton}>Rulette</button>
                 </Link>
                 <Link to="blackjack">
                     <button className={styles.gameButton}>Black Jack</button>
                 </Link>
-                <Link to="games/poker">
+                <Link to="poker">
                     <button className={styles.gameButton}>Poker</button>
                 </Link>
             </div>
