@@ -162,6 +162,7 @@ const gpa_allocator = gpa.allocator();
 const http = std.http;
 const Header = std.http.Header;
 const FetchOptions = std.http.Client.FetchOptions;
+const json = std.json;
 
 pub const UserData = struct {
     name: []const u8,
@@ -179,7 +180,22 @@ fn addCorsHeaders(req: zap.Request) void {
     _ = req.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization") catch {};
 }
 
-fn getUser(user_id: []const u8) !?FullResponse {
+fn getValByKey(str: []const u8, key: []const u8) []const u8 {
+    var i: usize = 0;
+    const len = str.len;
+    var end_i: usize = len;
+    const max_len = str.len;
+    while (end_i < max_len) : (i += 1) {
+        if (std.mem.eql(str[i..end_i])) {
+            break;
+        }
+        end_i += 1;
+    }
+
+
+}
+
+fn getUser(user_id: []const u8) !FullResponse {
     var url_buffer: [128]u8 = undefined;
     const url_str = try std.fmt.bufPrint(&url_buffer, "{s}{s}/{s}", .{ BASE_URL, USERS_ENDPOINT, user_id });
     const url = try std.Uri.parse(url_str);
@@ -197,7 +213,10 @@ fn getUser(user_id: []const u8) !?FullResponse {
     // const headers = [_]http.Header{auth_header};
     // _ = headers;
 
-    var req = try client.open(.GET, url, .{ .server_header_buffer = try gpa_allocator.alloc(u8, 4096) });
+    const buf = try gpa_allocator.alloc(u8, 1024 * 1024 * 4);
+    defer gpa_allocator.free(buf);
+
+    var req = try client.open(.GET, url, .{ .server_header_buffer = buf });
     defer req.deinit();
 
     try req.send();
@@ -205,30 +224,26 @@ fn getUser(user_id: []const u8) !?FullResponse {
     try req.wait();
 
     if (req.response.status != .ok) {
-        return null;
+        return FullResponse{ .success = false, .data = undefined };
     }
 
     var rdr = req.reader();
-    const body = try rdr.readAllAlloc(gpa_allocator, 1024 * 1024);
+    const body = try rdr.readAllAlloc(gpa_allocator, 1024 * 1024 * 4);
     defer gpa_allocator.free(body);
 
-    const parsed = try std.json.parseFromSlice(FullResponse, gpa_allocator, body, .{});
-    defer parsed.deinit();
+    const balance_str = getValueByKey(body, "accoutBalance");
+    const name = getValueByKey(body, "nick");
 
-    const full = parsed.value;
-    if (!full.success) {
-        return null;
-    }
-
+    const full = FullResponse{ .success = true, .data = UserData{.balance = bal, .name = name}};
     return full;
 }
 
 fn checkHasMoney(user_id: []const u8, required: u64) bool {
     const res = getUser(user_id) catch return false;
-    if (res == null) {
+    if (!res.success) {
         return false;
     }
-    return res.?.data.balance >= required;
+    return res.data.balance >= required;
 }
 
 fn getNickname(user_id: []const u8) bool {
@@ -304,12 +319,12 @@ fn handleCheckHasMoney(req: zap.Request) void {
 fn updateUserBalance(user_id: []const u8, amount: i64) !bool {
     const user_response = try getUser(user_id);
 
-    if (user_response == null) {
+    if (!user_response.success) {
         return false;
     }
     std.debug.print("chilli3", .{});
 
-    const current_balance: u64 = user_response.?.data.balance;
+    const current_balance: u64 = user_response.data.balance;
     const signed_curr: i64 = @intCast(current_balance);
     const new: i64 = signed_curr + amount;
 
@@ -406,6 +421,7 @@ fn handlePlaySlots(req: zap.Request) void {
         return;
     };
 
+    std.debug.print("\n{s}\n", .{user_id_str});
     const bet_str = parseQueryParam(query_str, "bet") orelse {
         req.setStatus(.bad_request);
         req.sendBody("{\"success\":false, \"message\":\"Missing 'bet' parameter\"}") catch {};
@@ -697,7 +713,7 @@ pub fn main() !void {
         .workers = 2,
     });
 
-    // const user_id: []const u8 = "6796b95fa3413550818afd81";
+    // const user_id: []const u8 = "6797751a4807fd9c2eb56596";
     // const maybe_data = try getUser(user_id);
     // if (maybe_data == null) {
     //     std.debug.print("no worky", .{});
