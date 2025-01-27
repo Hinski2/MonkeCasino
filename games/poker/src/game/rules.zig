@@ -118,10 +118,15 @@ pub fn evalHand(board: [5]Card, hand: [2]Card) RankStruct {
 
     if (rank_counts[@intFromEnum(Rank.Ace)] > 0 and rank_counts[@intFromEnum(Rank.Two)] > 0 and rank_counts[@intFromEnum(Rank.Three)] > 0 and rank_counts[@intFromEnum(Rank.Four)] > 0 and rank_counts[@intFromEnum(Rank.Five)] > 0) {
         has_wheel = true;
+
+        if (!has_straight) {
+            straight_streak = 5;
+        }
     }
 
     if ((has_straight or has_wheel) and has_flush) {
-        var start_id: u5 = straight_start + (straight_streak - 5);
+        const minus: u5 = straight_streak - 5;
+        var start_id: u5 = straight_start + minus;
         var real_sf: bool = true;
 
         if (start_id == @intFromEnum(Rank.Ten)) {

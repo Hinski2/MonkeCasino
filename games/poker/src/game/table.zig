@@ -30,8 +30,9 @@ pub const GameInfo = struct {
 pub const Table = struct {
     deck: Deck,
     players: [8]Player,
-    curr_active: usize,
+    curr_player: usize,
     board: [5]Card,
+    on_board: usize,
     pot: u64,
     max_stake: u64,
     dealer_pos: usize,
@@ -45,6 +46,7 @@ pub const Table = struct {
         self.dealer_pos = 0;
         self.join_cash = join_cash;
         self.small_blind = small_blind;
+        self.on_board = 0;
 
         for (&self.players) |*player| {
             player.status = PSEnum.Empty;
@@ -84,39 +86,45 @@ pub const Table = struct {
         var pos = (in_board_id + 1) % 8;
         var counter: usize = 0;
 
-        while (self.players[pos] != PSEnum.Active and counter <= 8) : (counter += 1) {
+        while ((self.players[pos].status != PSEnum.Active and self.players[pos].status != PSEnum.AllIn) and counter <= 8) : (counter += 1) {
             pos = (pos + 1) % 8;
         }
 
         return pos;
     }
 
-    pub fn draw_three(self: *Table) void {
+    pub fn draw_three(self: *Table) !void {
         var i: usize = 0;
 
         while (i < 3) : (i += 1) {
-            self.board[i] = self.deck.draw();
+            self.board[i] = try self.deck.draw();
         }
+
+        self.on_board = 3;
     }
 
-    pub fn draw_fourth(self: *Table) void {
-        self.board[3] = self.deck.draw();
+    pub fn draw_fourth(self: *Table) !void {
+        self.board[3] = try self.deck.draw();
+        self.on_board = 4;
     }
 
-    pub fn draw_fifth(self: *Table) void {
-        self.board[4] = self.deck.draw();
+    pub fn draw_fifth(self: *Table) !void {
+        self.board[4] = try self.deck.draw();
+        self.on_board = 5;
     }
 
-    pub fn start_round(self: *Table) void {
-        self.deck.reinit();
-        self.deck.shuffle();
+    pub fn start_round(self: *Table) !void {
+        try self.deck.reinit();
+        try self.deck.shuffle();
+        self.on_board = 0;
+        self.pot = 0;
 
         for (&self.players) |*player| {
             if (player.status != PSEnum.Empty) {
                 player.status = PSEnum.Active;
                 player.stake = 0;
-                player.cards[0] = Deck.draw();
-                player.cards[1] = Deck.draw();
+                player.cards[0] = try self.deck.draw();
+                player.cards[1] = try self.deck.draw();
                 player.played_betting = false;
             }
         }
@@ -124,12 +132,14 @@ pub const Table = struct {
         self.dealer_pos = self.next_active(self.dealer_pos);
 
         const small_blind_id = self.next_active(self.dealer_pos);
-        self.players[small_blind_id] = self.small_blind;
+        self.players[small_blind_id].stake = self.small_blind;
         self.players[small_blind_id].cash -= self.small_blind;
+        self.pot += self.small_blind;
 
         const big_blind_id = self.next_active(small_blind_id);
-        self.players[big_blind_id] = self.small_blind * 2;
+        self.players[big_blind_id].stake = self.small_blind * 2;
         self.players[big_blind_id].cash -= self.small_blind * 2;
+        self.pot += self.small_blind * 2;
 
         if (self.players[big_blind_id].cash == self.small_blind * 2) {
             self.players[big_blind_id].status = PSEnum.AllIn;
@@ -140,7 +150,7 @@ pub const Table = struct {
     }
 
     pub fn play(self: *Table, choice: Choice) void {
-        const curr: usize = self.curr_active;
+        const curr: usize = self.curr_player;
 
         if (choice == Choice.Fold) {
             self.players[curr].status = PSEnum.Folded;
@@ -149,6 +159,9 @@ pub const Table = struct {
 
             self.players[curr].status = PSEnum.AllIn;
             self.players[curr].played_betting = true;
+            self.pot += self.players[curr].cash;
+            self.players[curr].cash = 0;
+            self.players[curr].stake = this_stake;
 
             if (this_stake > self.max_stake) {
                 self.max_stake = this_stake;
@@ -156,12 +169,16 @@ pub const Table = struct {
         } else {
             if (choice == Choice.Raise) {
                 self.max_stake += self.small_blind * 2;
+                self.pot += self.small_blind * 2;
             }
-            self.players[curr].cash -= self.max_stake - self.players[curr].stake;
+            const added: u64 = self.max_stake - self.players[curr].stake;
+            self.players[curr].cash -= added;
+            self.players[curr].stake += added;
             self.players[curr].played_betting = true;
+            self.pot += added;
         }
 
-        self.curr_active = self.next_active(self.curr_active);
+        self.curr_player = self.next_active(self.curr_player);
     }
 
     pub fn stakes_matched(self: *Table) bool {
@@ -197,8 +214,8 @@ pub const Table = struct {
     }
 
     pub fn available_moves(self: *Table) ChoiceStruct {
-        const cash_left: u64 = self.players[self.curr_active].cash;
-        const curr_stake: u64 = self.players[self.curr_active].stake;
+        const cash_left: u64 = self.players[self.curr_player].cash;
+        const curr_stake: u64 = self.players[self.curr_player].stake;
 
         if (self.max_stake - curr_stake > cash_left) {
             return ChoiceStruct{ .can_check = false, .can_raise = false };
@@ -215,7 +232,7 @@ pub const Table = struct {
         var win_per_person: u64 = undefined;
         var rest: u64 = undefined;
 
-        if (self.one_remaining) {
+        if (self.one_remaining()) {
             for (self.players, 0..) |player, i| {
                 if (player.status == PSEnum.Active or player.status == PSEnum.AllIn) {
                     winner_ids[0] = i;
@@ -254,8 +271,8 @@ pub const Table = struct {
             }
         }
 
-        win_per_person = self.max_stake / winner_count;
-        rest = self.max_stake - win_per_person * winner_count;
+        win_per_person = self.pot / winner_count;
+        rest = self.pot - win_per_person * winner_count;
 
         for (winner_ids, 0..) |id, i| {
             if (i == winner_count) {
@@ -270,12 +287,8 @@ pub const Table = struct {
         }
 
         for (&self.players) |*player| {
-            if (player.cash == 0) {
-                if (player.is_bot) {
-                    player.cash = self.join_cash;
-                } else {
-                    player.status = PSEnum.Left;
-                }
+            if (!player.is_bot and player.cash < self.small_blind * 2) {
+                player.status = PSEnum.Left;
             }
         }
     }
@@ -304,6 +317,48 @@ pub const Table = struct {
         }
 
         return info;
+    }
+
+    pub fn refill_bots(self: *Table) void {
+        for (&self.players) |*player| {
+            if (player.is_bot and player.cash < self.small_blind * 2) {
+                player.cash = self.join_cash;
+            }
+        }
+    }
+
+    pub fn print_all(self: *Table) !void {
+        const stdout = std.io.getStdOut().writer();
+
+        for (&self.players, 0..) |*player, i| {
+            if (player.status == PSEnum.Empty) {
+                try stdout.print("{d} - empty\n", .{i});
+            } else {
+                if (i == self.dealer_pos) {
+                    try stdout.writeAll("D: ");
+                }
+
+                if (i == self.curr_player) {
+                    try stdout.writeAll("Active: ");
+                }
+
+                try stdout.print("{d} - {s}, cash: {d}, bet: {d}, cards:\n", .{ i, player.name, player.cash, player.stake });
+                try player.cards[0].print();
+                try player.cards[1].print();
+            }
+        }
+
+        try stdout.writeAll("\nBoard:\n");
+
+        for (&self.board, 0..) |*card, i| {
+            if (i == self.on_board) {
+                break;
+            }
+
+            try card.print();
+        }
+
+        try stdout.print("Pot: {d}\n\n\n", .{self.pot});
     }
 };
 
