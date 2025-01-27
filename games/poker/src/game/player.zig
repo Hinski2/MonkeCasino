@@ -23,7 +23,7 @@ pub const PlayerStatus = enum(u4) {
 };
 
 pub const Player = struct {
-    id: usize,
+    id: []const u8,
     name: []const u8,
     cards: [2]Card,
     cash: u64,

@@ -81,7 +81,7 @@ pub const Table = struct {
         return false;
     }
 
-    pub fn join(self: *Table, id: usize, name: []const u8, is_bot: bool) usize {
+    pub fn join(self: *Table, id: []const u8, name: []const u8, is_bot: bool) usize {
         var free_id: usize = undefined;
 
         for (self.players, 0..) |player, i| {

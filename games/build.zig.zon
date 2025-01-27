@@ -31,7 +31,9 @@
     .paths = .{
         "build.zig",
         "build.zig.zon",
-        "userapi.zig",
+        "backend/zig/",
+        "games/poker/src/",
+        "games/poker/src/game/",
         // For example...
         //"LICENSE",
         //"README.md",
