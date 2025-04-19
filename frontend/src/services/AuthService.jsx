@@ -12,7 +12,7 @@ export const LoginApi = async (email, password) => {
 
         return data;
     } catch (error) {
-        handleError(error.response?.data ? error.response.data : error);
+        handleError(error);
     }
 }
 

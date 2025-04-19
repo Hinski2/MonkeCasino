@@ -15,21 +15,21 @@ const __dirname = path.resolve();
 app.use(express.json()); 
 
 const corsOptions1 = {
-  origin: '77.255.162.181:5173',
+  origin: 'http://77.255.162.181:5173',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   optionsSuccessStatus: 204,
 };
 
 const corsOptions2 = {
-  origin: '77.255.162.181:8080',
+  origin: 'http://77.255.162.181:8080',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   optionsSuccessStatus: 204,
 };
 
 const corsOptions3 = {
-  origin: '77.255.162.181:3030',
+  origin: 'http://77.255.162.181:3030',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   optionsSuccessStatus: 204,
@@ -38,20 +38,21 @@ const corsOptions3 = {
 app.use((req, res, next) => {
   const origin = req.header('Origin');
 
-  if (origin === '77.255.162.181:5173') {
-    cors(corsOptions1)(req, res, next);
-  } else if (origin === '77.255.162.181:8080') {
-	  cors(corsOptions2)(req, res, next);
-  } else if (origin === '77.255.162.181:3030') {
-      cors(corsOptions3)(req, res, next);  
+  if (origin === 'http://77.255.162.181:5173') {
+    return cors(corsOptions1)(req, res, next);
+  } else if (origin === 'http://77.255.162.181:8080') {
+    return cors(corsOptions2)(req, res, next);
+  } else if (origin === 'http://77.255.162.181:3030') {
+    return cors(corsOptions3)(req, res, next);
   } else {
-    res.status(403).send({
-      success: false, 
-      user_message: "permission denied, you don't have authorization to use users api",
-      message: "permission denied, you don't have authorization to use users api",
+    res.status(403).json({
+      success: false,
+      user_message: "Permission denied, you don't have authorization to use users api",
+      message: "Permission denied, you don't have authorization to use users api",
     });
   }
 });
+
 
 // user routes
 app.use('/api/users', userRoutes);
